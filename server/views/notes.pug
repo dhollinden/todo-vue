@@ -1,0 +1,43 @@
+extends layout
+
+block content
+
+    h1= title
+
+    br
+
+    if message === 'login_success'
+        div#message You have successfully logged in.
+    else if message === "note_deleted"
+        div#message Your note was deleted.
+    else if message === 'improperId'
+        div#message Improper note ID
+    else if message === 'invalidId'
+        div#message There is no note with that ID
+    else if message === 'not_yours'
+        div#message You don't have a note with that ID
+    else
+        br
+
+    br
+
+    if notes.length !== 0
+
+        p Select a note from the menu
+
+        form(method='POST' action='/notes/')
+            div.form-group
+                select#id.form-control(type='select' placeholder='Select note list' name='id' required='true' )
+                    for note in notes
+                        option(value=note._id) #{note.name}
+            button.btn.btn-primary(type='submit') Submit
+
+    else
+
+        br
+
+        p
+
+            a(href='/notes/create') Create new note
+
+    br

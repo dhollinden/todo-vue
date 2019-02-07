@@ -1,0 +1,29 @@
+extends layout
+
+block content
+
+    h1 #{title}
+
+    br
+
+    if message === 'not_logged_in'
+        div You must log in before you can work with notes.
+    else if message === 'logged_out'
+        div You have been logged out.
+    else if message === 'account_deleted'
+        div Your account has been deleted.
+    else
+        br
+
+    br
+
+
+    h4 Sign Up
+    p To create notes, please&nbsp;
+        a(href='/signup') Sign Up
+
+    br
+
+    h4 Log In
+    p If you have an account, please&nbsp;
+        a(href='/login') Log In
