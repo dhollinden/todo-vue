@@ -2,9 +2,9 @@
   <b-row class="justify-content-md-center">
     <b-col cols="6">
       <h2>My Account</h2>
-      <div v-if="errors && errors.length">
-        <div v-for="error of errors" :key="error.id">
-          <b-alert show>{{error.msg}}</b-alert>
+      <div v-if="emailMessages && emailMessages.length">
+        <div v-for="emailMessage of emailMessages" :key="emailMessage.id">
+          <b-alert show>{{emailMessage.msg}}</b-alert>
         </div>
       </div>
       <b-form @submit="onEmailUpdateSubmit">
@@ -24,6 +24,47 @@
         </b-form-group>
         <b-button type="submit" variant="primary">Update email address</b-button>
       </b-form>
+      <div>&nbsp;</div>
+      <div>&nbsp;</div>
+      <div v-if="passwordMessages && passwordMessages.length">
+        <div v-for="passwordMessage of passwordMessages" :key="passwordMessage.id">
+          <b-alert show>{{passwordMessage.msg}}</b-alert>
+        </div>
+      </div>
+      <b-form @submit="onPasswordUpdateSubmit">
+        <b-form-group id="fieldsetHorizontal3"
+                      horizontal
+                      :label-cols="4"
+                      breakpoint="md"
+                      label="Current Password">
+          <b-form-input id="cur_password" :type='passwordFieldType' v-model.trim="password.cur_password" autocomplete="current password"></b-form-input>
+        </b-form-group>
+        <b-form-group id="fieldsetHorizontal4"
+                      horizontal
+                      :label-cols="4"
+                      breakpoint="md"
+                      label="New Password">
+          <b-form-input id="new_password" :type='passwordFieldType' v-model.trim="password.new_password" autocomplete="new password"></b-form-input>
+        </b-form-group>
+        <b-button type="submit" variant="primary">Update Password</b-button>
+        <b-button type="button" @click="switchVisibility">show / hide</b-button>
+      </b-form>
+      <div>&nbsp;</div>
+      <div>&nbsp;</div>
+      <div v-if="deleteMessages && deleteMessages.length">
+        <div v-for="deleteMessage of deleteMessages" :key="deleteMessage.id">
+          <b-alert show>{{deleteMessage.msg}}</b-alert>
+        </div>
+      </div>
+      <b-form @submit="onDeleteSubmit">
+        <b-form-group id="fieldsetHorizontal5"
+                      horizontal
+                      :label-cols="4"
+                      breakpoint="md"
+                      label="Delete Account">
+          <b-button type="submit" variant="primary">Delete Account</b-button>
+        </b-form-group>
+        </b-form>
     </b-col>
   </b-row>
 </template>
@@ -37,8 +78,12 @@ export default {
   name: 'MyAccount',
   data () {
     return {
-      email: {},
-      errors: []
+      email: {cur_email: ''},
+      password: {},
+      emailMessages: [],
+      passwordMessages: [],
+      deleteMessages: [],
+      passwordFieldType: 'password'
     }
   },
   mounted () {
@@ -47,26 +92,68 @@ export default {
   methods: {
     async getCurrentEmail () {
       const response = await MyAccountService.getEmail()
+      console.log('response.data.email = ', response.data.email)
+      // this needs error handling !
       this.email.cur_email = response.data.email
+      console.log('this.email = ', this.email)
     },
     async onEmailUpdateSubmit (evt) {
       evt.preventDefault()
-      /* const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        withCredentials: true
-      } */
       const response = await MyAccountService.updateEmail(qs.stringify(this.email))
       if (response.data.success) {
         this.email = {
           cur_email: response.data.new_email,
           new_email: ''
         }
-        this.errors = [{msg: 'Your email address was updated'}]
+        this.emailMessages = [{msg: 'Your email address was updated'}]
       } else {
-        this.errors = response.data.err
+        this.emailMessages = response.data.err
       }
+      this.passwordMessages = ''
+    },
+    async onPasswordUpdateSubmit (evt) {
+      evt.preventDefault()
+      const response = await MyAccountService.updatePassword(qs.stringify(this.password))
+      if (response.data.success) {
+        this.password = {
+          cur_password: '',
+          new_password: ''
+        }
+        this.passwordMessages = [{msg: 'Your password was updated'}]
+      } else {
+        this.passwordMessages = response.data.err
+      }
+      this.emailMessages = ''
+    },
+    onDeleteSubmit (evt) {
+      console.log('inside onDeleteSubmit')
+      evt.preventDefault()
+      const $this = this
+      console.log('inside onDeleteSubmit: this.deleteMessages = ', this.deleteMessages)
+      $this.$swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(async function (willDelete) {
+        console.log('inside onDeleteSubmit: .then: willDelete.value = ', willDelete.value)
+        console.log('inside onDeleteSubmit: .then: this.deleteMessages = ', $this.deleteMessages)
+        if (willDelete.value) {
+          const response = await MyAccountService.deleteAccount()
+          console.log('inside onDeleteSubmit: inside if (willDelete.value): response.data.success = ', response.data.success)
+          if (response.data.success) {
+            $this.$router.push({ name: 'Login' })
+          } else {
+            $this.deleteMessages = response.data.err
+          }
+        }
+      })
+    },
+    switchVisibility () {
+      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
     }
   }
 }

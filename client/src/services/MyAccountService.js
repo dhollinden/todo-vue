@@ -14,7 +14,7 @@ export default {
     return Api().post('account/password', params)
   },
 
-  deleteAccount (params) {
-    return Api().post('account/delete', params)
+  deleteAccount () {
+    return Api().get('account/delete')
   }
 }

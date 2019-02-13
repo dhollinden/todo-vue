@@ -1,12 +1,12 @@
 import Api from '@/services/Api'
 
 export default {
-  fetchItems () {
+  fetchNotes () {
     return Api().get('notes')
   },
 
-  addPost (params) {
-    return Api().post('add_post', params)
+  addNote (params) {
+    return Api().post('create', params)
   },
 
   updatePost (params) {

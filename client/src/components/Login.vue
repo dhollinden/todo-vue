@@ -20,9 +20,10 @@
                       :label-cols="4"
                       breakpoint="md"
                       label="Enter Password">
-          <b-form-input type="password" id="password" v-model.trim="login.password"></b-form-input>
+          <b-form-input :type='passwordFieldType' id="password" v-model.trim="login.password"></b-form-input>
         </b-form-group>
         <b-button type="submit" variant="primary">Login</b-button>
+        <b-button type="button" @click="switchVisibility">show / hide</b-button>
         <b-button type="button" variant="success" @click.stop="register()">Register</b-button>
       </b-form>
     </b-col>
@@ -39,7 +40,8 @@ export default {
   data () {
     return {
       login: {},
-      errors: []
+      errors: [],
+      passwordFieldType: 'password'
     }
   },
   methods: {
@@ -64,7 +66,9 @@ export default {
         this.errors = response.data.err
       }
     },
-
+    switchVisibility () {
+      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
+    },
     register () {
       this.$router.push({
         name: 'Register'
