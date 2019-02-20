@@ -1,6 +1,10 @@
 <template>
   <b-row class="justify-content-md-center">
     <b-col cols="6">
+      <div>
+        <router-link v-bind:to="{ name: 'Notes' }" class="">My Account</router-link>
+        <b-link @click="logout()">Logout</b-link>
+      </div>
       <h2>My Account</h2>
       <div v-if="emailMessages && emailMessages.length">
         <div v-for="emailMessage of emailMessages" :key="emailMessage.id">
@@ -72,6 +76,7 @@
 <script>
 
 import MyAccountService from '@/services/MyAccountService'
+import AuthService from '@/services/AuthService'
 import qs from 'querystring'
 
 export default {
@@ -126,10 +131,8 @@ export default {
       this.emailMessages = ''
     },
     onDeleteSubmit (evt) {
-      console.log('inside onDeleteSubmit')
       evt.preventDefault()
       const $this = this
-      console.log('inside onDeleteSubmit: this.deleteMessages = ', this.deleteMessages)
       $this.$swal({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -139,11 +142,8 @@ export default {
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
       }).then(async function (willDelete) {
-        console.log('inside onDeleteSubmit: .then: willDelete.value = ', willDelete.value)
-        console.log('inside onDeleteSubmit: .then: this.deleteMessages = ', $this.deleteMessages)
         if (willDelete.value) {
           const response = await MyAccountService.deleteAccount()
-          console.log('inside onDeleteSubmit: inside if (willDelete.value): response.data.success = ', response.data.success)
           if (response.data.success) {
             $this.$router.push({ name: 'Login' })
           } else {
@@ -151,6 +151,14 @@ export default {
           }
         }
       })
+    },
+    async logout () {
+      const response = await AuthService.logout()
+      if (response.data.success) {
+        this.$router.push({ name: 'Login' })
+      } else {
+        this.errors = response.data.err
+      }
     },
     switchVisibility () {
       this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'

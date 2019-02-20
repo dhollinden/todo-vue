@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import Notes from '@/components/Notes'
-import Login from '@/components/Login'
 import Register from '@/components/Register'
+import Login from '@/components/Login'
 import MyAccount from '@/components/MyAccount'
+import Notes from '@/components/Notes'
+import AddNote from '@/components/AddNote'
+import EditNote from '@/components/EditNote'
 
 Vue.use(Router)
 
@@ -16,9 +18,9 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/notes',
-      name: 'Notes',
-      component: Notes
+      path: '/register',
+      name: 'Register',
+      component: Register
     },
     {
       path: '/login',
@@ -26,14 +28,24 @@ export default new Router({
       component: Login
     },
     {
-      path: '/register',
-      name: 'Register',
-      component: Register
-    },
-    {
       path: 'myaccount',
       name: 'MyAccount',
       component: MyAccount
+    },
+    {
+      path: '/notes',
+      name: 'Notes',
+      component: Notes
+    },
+    {
+      path: '/addnote',
+      name: 'AddNote',
+      component: AddNote
+    },
+    {
+      path: '/editnote/:id',
+      name: 'EditNote',
+      component: EditNote
     }
   ]
 })

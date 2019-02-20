@@ -8,5 +8,9 @@ export default {
 
   login (params) {
     return Api().post('login', params)
+  },
+
+  logout (params) {
+    return Api().get('logout')
   }
 }

@@ -46,23 +46,11 @@ export default {
   },
   methods: {
     async onSubmit (evt) {
-      // console.log('inside Login.vue onSubmit')
       evt.preventDefault()
-      const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        withCredentials: true
-      }
-      const response = await AuthService.login(qs.stringify(this.login), config)
-      // console.log(response.data)
+      const response = await AuthService.login(qs.stringify(this.login))
       if (response.data.success) {
-        this.$router.push({ name: 'MyAccount' })
+        this.$router.push({ name: 'Notes' })
       } else {
-        // console.log('inside Login.vue onSubmit else statement')
-        for (const error in response.data.err) {
-          console.log(response.data.err[error])
-        }
         this.errors = response.data.err
       }
     },

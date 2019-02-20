@@ -1,22 +1,24 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <h2>Notes List</h2>
-      <div><router-link v-bind:to="{ name: 'AddPost' }" class="">Add Post</router-link>
+      <div>
         <router-link v-bind:to="{ name: 'MyAccount' }" class="">My Account</router-link>
-        <b-link @click="logout()">(Logout)</b-link>
+        <b-link @click="logout()">Logout</b-link>
       </div>
+      <h2>Notes List</h2>
+      <div><router-link v-bind:to="{ name: 'AddNote' }" class="">Add Note</router-link>
+      </div>
+      <ul v-if="errors && errors.length">
+        <li v-for="error of errors" :key="error.id">
+          <b-alert show>{{error.msg}}</b-alert>
+        </li>
+      </ul>
       <b-table striped hover :items="notes" :fields="fields">
         <template slot="actions" slot-scope="row">
-          <router-link v-bind:to="{ name: 'editnote', params: { id: row.item._id } }">Edit</router-link> |
+          <router-link v-bind:to="{ name: 'EditNote', params: { id: row.item._id } }">Edit</router-link> |
           <a href="#" @click="deleteNote(row.item._id)">Delete</a>
         </template>
       </b-table>
-      <ul v-if="errors && errors.length">
-        <li v-for="error of errors" :key="error.id">
-          <b-alert show>{{error.message}}</b-alert>
-        </li>
-      </ul>
     </b-col>
   </b-row>
 </template>
@@ -24,6 +26,8 @@
 <script>
 
 import TodoService from '@/services/TodoService'
+import AuthService from '@/services/AuthService'
+import qs from 'querystring'
 
 export default {
   name: 'BookList',
@@ -38,28 +42,47 @@ export default {
       errors: []
     }
   },
-  async created () {
-    const response = await TodoService.fetchNotes()
-    if (response.data.success) {
-      console.log('inside created() function: response.data.success = ', response.data.success)
-      this.notes = response.data.notes
-    } else {
-      // what happens if you're not logged in?
-      this.errors = response.data.err
-    }
+  mounted () {
+    this.fetchNotes()
   },
   methods: {
-    details (book) {
-      this.$router.push({
-        name: 'ShowBook',
-        params: { id: book._id }
+    async fetchNotes () {
+      const response = await TodoService.fetchNotes()
+      if (response.data.success) {
+        this.notes = response.data.notes
+      } else {
+        // what happens if you're not logged in?
+        this.errors = response.data.err
+      }
+    },
+    deleteNote (id) {
+      const $this = this
+      $this.$swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(async function (willDelete) {
+        if (willDelete.value) {
+          const response = await TodoService.deleteNote(qs.stringify({ id: id }))
+          if (response.data.success) {
+            $this.fetchNotes()
+          } else {
+            $this.errors = response.data.err
+          }
+        }
       })
     },
-    logout () {
-      localStorage.removeItem('jwtToken')
-      this.$router.push({
-        name: 'Login'
-      })
+    async logout () {
+      const response = await AuthService.logout()
+      if (response.data.success) {
+        this.$router.push({ name: 'Login' })
+      } else {
+        this.errors = response.data.err
+      }
     }
   }
 }

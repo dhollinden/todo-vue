@@ -5,19 +5,19 @@ export default {
     return Api().get('notes')
   },
 
+  getNote (params) {
+    return Api().get('notes/' + params.id)
+  },
+
   addNote (params) {
-    return Api().post('create', params)
+    return Api().post('notes/create', params)
   },
 
-  updatePost (params) {
-    return Api().put('posts/' + params.id, params)
+  updateNote (params, id) {
+    return Api().post('notes/' + id + '/update', params)
   },
 
-  getPost (params) {
-    return Api().get('post/' + params.id)
-  },
-
-  deletePost (id) {
-    return Api().delete('posts/' + id)
+  deleteNote (params) {
+    return Api().post('notes/' + params.id + '/delete', params)
   }
 }
