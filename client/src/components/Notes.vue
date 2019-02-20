@@ -48,7 +48,10 @@ export default {
   methods: {
     async fetchNotes () {
       const response = await TodoService.fetchNotes()
-      if (response.data.success) {
+      if (response.data.isAuthenticated === false) {
+        console.log('isAuthenticated = ', response.data.isAuthenticated)
+        this.$router.push({ name: 'Login' })
+      } else if (response.data.success) {
         this.notes = response.data.notes
       } else {
         // what happens if you're not logged in?

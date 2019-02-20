@@ -2,7 +2,7 @@
   <b-row class="justify-content-md-center">
     <b-col cols="6">
       <div>
-        <router-link v-bind:to="{ name: 'Notes' }" class="">My Account</router-link>
+        <router-link v-bind:to="{ name: 'Notes' }" class="">My Notes</router-link>
         <b-link @click="logout()">Logout</b-link>
       </div>
       <h2>My Account</h2>
@@ -97,10 +97,15 @@ export default {
   methods: {
     async getCurrentEmail () {
       const response = await MyAccountService.getEmail()
-      console.log('response.data.email = ', response.data.email)
-      // this needs error handling !
-      this.email.cur_email = response.data.email
-      console.log('this.email = ', this.email)
+      if (response.data.isAuthenticated === false) {
+        console.log('isAuthenticated = ', response.data.isAuthenticated)
+        this.$router.push({ name: 'Login' })
+      } else if (response.data.email) {
+        this.email.cur_email = response.data.email
+        console.log('this.email = ', this.email)
+      } else {
+        this.errors = response.data.err
+      }
     },
     async onEmailUpdateSubmit (evt) {
       evt.preventDefault()
