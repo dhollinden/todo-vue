@@ -73,8 +73,6 @@ export default {
       })
     },
     async deleteNote (id) {
-      console.log('inside Notes: deleteNote(id): id = ', id)
-      console.log('qs.stringify({ id: id }) = ', qs.stringify({ id: id }))
       const response = await TodoService.deleteNote(qs.stringify({ id: id }))
       if (response.data.success) {
         this.fetchNotes()
