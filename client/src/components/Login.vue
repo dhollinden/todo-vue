@@ -21,9 +21,9 @@
                       breakpoint="md"
                       label="Enter Password">
           <b-form-input :type='passwordFieldType' id="password" v-model.trim="login.password"></b-form-input>
+          <b-button type="button" @click="switchVisibility">show / hide</b-button>
         </b-form-group>
         <b-button type="submit" variant="primary">Login</b-button>
-        <b-button type="button" @click="switchVisibility">show / hide</b-button>
         <b-button type="button" variant="success" @click.stop="register()">Register</b-button>
       </b-form>
     </b-col>
