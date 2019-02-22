@@ -14,8 +14,8 @@ export default {
     return Api().post('notes/create', params)
   },
 
-  updateNote (params, id) {
-    return Api().post('notes/' + id + '/update', params)
+  updateNote (params) {
+    return Api().post('notes/' + qs.parse(params)._id + '/update', params)
   },
 
   deleteNote (params) {

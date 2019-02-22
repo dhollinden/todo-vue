@@ -62,7 +62,7 @@ export default {
       }
     },
     async updateNote () {
-      const response = await TodoService.updateNote(qs.stringify(this.note), this.$route.params.id)
+      const response = await TodoService.updateNote(qs.stringify(this.note))
       if (response.data.success) {
         this.$router.push({ name: 'Notes' })
       } else {
