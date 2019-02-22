@@ -20,7 +20,8 @@
                       :label-cols="4"
                       breakpoint="md"
                       label="Enter Password">
-          <b-form-input type="password" id="password" v-model.trim="register.password"></b-form-input>
+          <b-form-input :type='passwordFieldType' id="password" v-model.trim="register.password"></b-form-input>
+          <b-button type="button" @click="switchVisibility">show / hide</b-button>
         </b-form-group>
         <b-button type="submit" variant="primary">Register</b-button>
         <b-button type="button" variant="success" @click="$router.go(-1)">Cancel</b-button>
@@ -39,29 +40,22 @@ export default {
   data () {
     return {
       register: {},
-      errors: []
+      errors: [],
+      passwordFieldType: 'password'
     }
   },
   methods: {
     async onSubmit (evt) {
-      // console.log('inside Register.vue onSubmit')
       evt.preventDefault()
-      const config = {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }
-      const response = await AuthService.register(qs.stringify(this.register), config)
-      // console.log(response.data)
+      const response = await AuthService.register(qs.stringify(this.register))
       if (response.data.success) {
         this.$router.push({ name: 'Login' })
       } else {
-        // console.log('inside Register.vue onSubmit else statement')
-        for (const error in response.data.err) {
-          console.log(response.data.err[error])
-        }
         this.errors = response.data.err
       }
+    },
+    switchVisibility () {
+      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
     }
   }
 }
