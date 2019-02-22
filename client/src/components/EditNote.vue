@@ -23,7 +23,7 @@
                       horizontal
                       :label-cols="4"
                       breakpoint="md"
-                      label="Note Body">
+                      label="Note">
           <b-form-input id="body" v-model.trim="note.body"></b-form-input>
         </b-form-group>
         <b-button type="submit" variant="primary">Update</b-button>
@@ -54,7 +54,6 @@ export default {
         id: this.$route.params.id
       })
       if (response.data.isAuthenticated === false) {
-        console.log('isAuthenticated = ', response.data.isAuthenticated)
         this.$router.push({ name: 'Login' })
       } else if (response.data.success) {
         this.note = response.data.note
@@ -66,7 +65,6 @@ export default {
       const response = await TodoService.updateNote(qs.stringify(this.note), this.$route.params.id)
       if (response.data.success) {
         this.$router.push({ name: 'Notes' })
-        // this.note = response.data.note
       } else {
         this.errors = response.data.err
       }

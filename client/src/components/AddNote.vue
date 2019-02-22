@@ -51,9 +51,10 @@ export default {
   },
   methods: {
     async checkAuth () {
+      // check whether user is logged in by attempting
+      // to retrieve user's email address
       const response = await MyAccountService.getEmail()
       if (response.data.isAuthenticated === false) {
-        console.log('isAuthenticated = ', response.data.isAuthenticated)
         this.$router.push({ name: 'Login' })
       } else {
         this.errors = response.data.err
