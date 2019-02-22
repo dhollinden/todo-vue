@@ -98,11 +98,9 @@ export default {
     async getCurrentEmail () {
       const response = await MyAccountService.getEmail()
       if (response.data.isAuthenticated === false) {
-        console.log('isAuthenticated = ', response.data.isAuthenticated)
         this.$router.push({ name: 'Login' })
       } else if (response.data.email) {
         this.email.cur_email = response.data.email
-        console.log('this.email = ', this.email)
       } else {
         this.errors = response.data.err
       }
@@ -119,6 +117,7 @@ export default {
       } else {
         this.emailMessages = response.data.err
       }
+      // clear any previous messages
       this.passwordMessages = ''
     },
     async onPasswordUpdateSubmit (evt) {
@@ -133,6 +132,7 @@ export default {
       } else {
         this.passwordMessages = response.data.err
       }
+      // clear any previous messages
       this.emailMessages = ''
     },
     onDeleteSubmit (evt) {
@@ -146,16 +146,19 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-      }).then(async function (willDelete) {
+      }).then(function (willDelete) {
         if (willDelete.value) {
-          const response = await MyAccountService.deleteAccount()
-          if (response.data.success) {
-            $this.$router.push({ name: 'Login' })
-          } else {
-            $this.deleteMessages = response.data.err
-          }
+          $this.deleteAccount()
         }
       })
+    },
+    async deleteAccount () {
+      const response = await MyAccountService.deleteAccount()
+      if (response.data.success) {
+        this.$router.push({ name: 'Login' })
+      } else {
+        this.deleteMessages = response.data.err
+      }
     },
     async logout () {
       const response = await AuthService.logout()
