@@ -359,7 +359,7 @@ exports.login_post = [
 exports.logout_get = function (req, res, next) {
 
     req.logout();
-    res.redirect('/?message=logged_out')
+    res.send({ success: true })
 
 }
 
@@ -404,15 +404,10 @@ exports.account = function (req, res, next) {
 // account delete GET
 exports.account_delete = function (req, res, next) {
 
-    if (req.user.id !== req.params.id) {
+    console.log('inside account_delete')
+    console.log('inside account_delete: req.user.id = ', req.user.id)
 
-        // ids don't match, so redirect
-
-        res.redirect('/account?message=delete_failed')
-
-    }
-
-    // proceed, delete notes first
+    // delete notes first
 
     const item = 'note';
     const criteria = { 'user_id': req.user.id };
@@ -430,10 +425,13 @@ exports.account_delete = function (req, res, next) {
 
                 .then( deleted_user => {
 
-                // logout user, redirect to home page
+                // logout user, respond with success
 
-                req.logOut()
-                res.redirect('/?message=account_deleted');
+                    console.log('inside account_delete: delete success')
+
+                    req.logOut()
+
+                    res.send({ success: true })
 
             })
 
@@ -465,8 +463,8 @@ exports.account_email_get = function (req, res, next) {
     res.render('user_email_form', pageContent);
 */
 
-    res.send({email: req.user.email})
-
+    console.log('inside account_email_get, email = ', req.user.email)
+    res.send({ email: req.user.email })
 }
 
 
@@ -600,6 +598,7 @@ exports.account_password_post = [
 
             // there are errors, so render again with error messages
 
+/*
             const pageContent = {
 
                 title: 'My Account: Update Password',
@@ -611,6 +610,9 @@ exports.account_password_post = [
             }
 
             res.render('user_password_form', pageContent);
+*/
+
+            res.send({ err: errors.array() })
 
         }
 
@@ -622,6 +624,7 @@ exports.account_password_post = [
 
                 // no match, so render page with error message
 
+/*
                 const pageContent = {
 
                     title: 'My Account: Update Password',
@@ -633,6 +636,17 @@ exports.account_password_post = [
                 }
 
                 res.render('user_password_form', pageContent);
+*/
+
+                const passwordNoMatch = {
+                    err: [
+                        {
+                            msg: "The current password you entered isn't correct."
+                        }
+                    ]
+                }
+
+                res.send(passwordNoMatch)
 
             }
 
@@ -653,7 +667,10 @@ exports.account_password_post = [
 
                     .then( result => {
 
-                        return res.redirect('/account?message=password_update_success')
+                        res.send({
+                            success: true,
+                            new_password: req.body.new_password
+                        })
 
                     })
                     .catch( err => {

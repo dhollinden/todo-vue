@@ -85,14 +85,14 @@ app.use('/', indexRouter);
 // redirect unauthenticated users from /account to home page
 app.use('/account', (req, res, next) => {
     if(!req.isAuthenticated())
-        res.redirect('/?message=not_logged_in');
+        res.send({ isAuthenticated: false})
     else
         next()
 }, accountRouter);
 // redirect unauthenticated users from /notes to home page
 app.use('/notes', (req, res, next) => {
     if(!req.isAuthenticated())
-        res.redirect('/?message=not_logged_in');
+        res.send({ isAuthenticated: false})
     else
         next()
 }, notesRouter);

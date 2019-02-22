@@ -12,18 +12,9 @@ exports.index = (req, res, next) => {
 
         .then(notes => {
 
-            // render page
+            // send notes
 
-            const pageContent = {
-
-                title: 'My Notes',
-                notes: notes,
-                message: req.query.message,
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('notes', pageContent);
+            res.send({success: true, notes: notes})
 
         })
 
@@ -46,6 +37,8 @@ exports.note_detail = (req, res, next) => {
 
     const requestedNoteId = req.params.id ? req.params.id : req.body.id;
 
+    console.log('inside note_detail: requestedNoteId = ', requestedNoteId)
+
     getAllNotesForUser(req.user.id)
 
         .then(notes => {
@@ -59,6 +52,7 @@ exports.note_detail = (req, res, next) => {
 
             // render page with requestedNote
 
+/*
             const pageContent = {
 
                 title: 'My Notes',
@@ -70,6 +64,11 @@ exports.note_detail = (req, res, next) => {
             }
 
             res.render('note_detail', pageContent);
+*/
+
+            console.log('inside note_detail: requestedNote = ', requestedNote)
+
+            res.send({ success: true, note: requestedNote})
 
         })
 
@@ -134,18 +133,9 @@ exports.note_create_post = [
 
         if (!errors.isEmpty()) {
 
-            // validation errors, render form again with sanitized values
+            // validation errors, send back errors
 
-            const pageContent = {
-
-                title: 'Create Note:',
-                selectedNote: sanitizedNote,
-                errors: errors.array(),
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('note_form', pageContent);
+            res.send({ err: errors.array() })
 
         }
 
@@ -161,16 +151,9 @@ exports.note_create_post = [
 
                     if (anotherNoteWithSameName) {
 
-                        const pageContent = {
+                        const emailInUse = { err: [ { msg: "A note with that name already exists" } ] }
+                        res.send(emailInUse)
 
-                            title: 'Create Note:',
-                            selectedNote: sanitizedNote,
-                            message: 'name_exists',
-                            authenticated: req.isAuthenticated()
-
-                        }
-
-                        return res.render('note_form', pageContent);
                     }
 
                     // save note, redirect to note detail page
@@ -181,7 +164,7 @@ exports.note_create_post = [
 
                         .then( createdNote => {
 
-                            res.redirect(`/notes/${createdNote._id}?message=noteCreated`);
+                            res.send({ success: true })
 
                         })
 
@@ -243,7 +226,7 @@ exports.note_update_post = [
 
     // validate note name and body fields
 
-    body('name', 'Name is required')
+    body('name', 'A note name is required')
         .isLength({min: 1})
         .trim(),
 
@@ -280,16 +263,7 @@ exports.note_update_post = [
 
             // validation errors, render form again with sanitized values
 
-            const pageContent = {
-
-                title: 'Update Note',
-                selectedNote: sanitizedNote,
-                errors: errors.array(),
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('note_form', pageContent);
+            res.send({ err: errors.array() })
 
         }
 
@@ -307,7 +281,10 @@ exports.note_update_post = [
 
                     const requestedNote = findNoteById(notes, requestedNoteId);
                     if (!requestedNote) {
-                        return res.redirect('/notes?message=invalidId');
+
+                        // return res.redirect('/notes?message=invalidId');
+                        res.send({ errors: 'Invalid message ID'})
+
                     }
 
                     // if user has another note with same name, render again with error message and sanitized values
@@ -315,6 +292,7 @@ exports.note_update_post = [
                     const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, requestedNoteId, req.body.name);
                     if (anotherNoteWithSameName) {
 
+/*
                         const pageContent = {
 
                             title: 'Update Note',
@@ -325,6 +303,8 @@ exports.note_update_post = [
                         }
 
                         return res.render('note_form', pageContent);
+*/
+                        res.send({ errors: 'A note with that name already exists'})
 
                     }
 
@@ -350,7 +330,10 @@ exports.note_update_post = [
 
                             // redirect to sanitizedNote._id because update does not return a document
 
-                            res.redirect(`/notes/${sanitizedNote._id}?message=noteUpdated`);
+                            // res.redirect(`/notes/${sanitizedNote._id}?message=noteUpdated`);
+                            res.send({
+                                success: true
+                            })
 
                         });
 
@@ -413,6 +396,8 @@ exports.note_delete_post = (req, res, next) => {
 
     // get ID  of requested note
 
+    console.log('inside note_delete_post: req.body.id = ', req.body.id)
+
     const requestedNoteId = req.body.id;
 
     getAllNotesForUser(req.user.id)
@@ -422,27 +407,43 @@ exports.note_delete_post = (req, res, next) => {
             // if user does not have note with requestedNoteId, redirect
 
             const requestedNote = findNoteById(notes, requestedNoteId);
+
+            console.log('inside note_delete_post: requestedNote = ', requestedNote)
+
             if (!requestedNote) {
-                return res.redirect('/notes?message=invalidId');
+
+                // return res.redirect('/notes?message=invalidId');
+
+                console.log('inside note_delete_post: invalid id ')
+
+                res.send({ err: [ { msg: "Invalid note ID" } ] })
+
+            } else {
+
+                // delete requestedNote, redirect to notes page
+
+                console.log('inside note_delete_post: deleting note')
+
+                const item = 'note';
+                const criteria = {
+
+                    '_id': requestedNoteId,
+                    'user_id': req.user.id
+
+                };
+
+                remove(item, criteria)
+
+                    .then(deleted_note => {
+
+                        // res.redirect('/notes?message=note_deleted');
+
+                        res.send({ success: true })
+
+                    });
+
             }
 
-            // delete requestedNote, redirect to notes page
-
-            const item = 'note';
-            const criteria = {
-
-                '_id': requestedNoteId,
-                'user_id': req.user.id
-
-            };
-
-            remove(item, criteria)
-
-                .then(deleted_note => {
-
-                    res.redirect('/notes?message=note_deleted');
-
-                });
 
         })
         .catch( err => {

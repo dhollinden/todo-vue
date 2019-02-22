@@ -15,7 +15,7 @@ router.get('/', user_controller.account);
 
 // Delete account
 // GET
-router.get('/delete/:id', user_controller.account_delete);
+router.get('/delete', user_controller.account_delete);
 
 
 // Update email
