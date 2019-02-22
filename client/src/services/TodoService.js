@@ -1,4 +1,5 @@
 import Api from '@/services/Api'
+import qs from 'querystring'
 
 export default {
   fetchNotes () {
@@ -18,6 +19,6 @@ export default {
   },
 
   deleteNote (params) {
-    return Api().post('notes/' + params.id + '/delete', params)
+    return Api().post('notes/' + qs.parse(params).id + '/delete', params)
   }
 }

@@ -5,7 +5,7 @@
         <router-link v-bind:to="{ name: 'MyAccount' }" class="">My Account</router-link>
         <b-link @click="logout()">Logout</b-link>
       </div>
-      <h2>Notes List</h2>
+      <h2>My Notes</h2>
       <div><router-link v-bind:to="{ name: 'AddNote' }" class="">Add Note</router-link>
       </div>
       <ul v-if="errors && errors.length">
@@ -16,7 +16,7 @@
       <b-table striped hover :items="notes" :fields="fields">
         <template slot="actions" slot-scope="row">
           <router-link v-bind:to="{ name: 'EditNote', params: { id: row.item._id } }">Edit</router-link> |
-          <a href="#" @click="deleteNote(row.item._id)">Delete</a>
+          <a href="#" @click="confirmDeleteNote(row.item._id)">Delete</a>
         </template>
       </b-table>
     </b-col>
@@ -30,7 +30,7 @@ import AuthService from '@/services/AuthService'
 import qs from 'querystring'
 
 export default {
-  name: 'BookList',
+  name: 'Notes',
   data () {
     return {
       fields: {
@@ -49,16 +49,14 @@ export default {
     async fetchNotes () {
       const response = await TodoService.fetchNotes()
       if (response.data.isAuthenticated === false) {
-        console.log('isAuthenticated = ', response.data.isAuthenticated)
         this.$router.push({ name: 'Login' })
       } else if (response.data.success) {
         this.notes = response.data.notes
       } else {
-        // what happens if you're not logged in?
         this.errors = response.data.err
       }
     },
-    deleteNote (id) {
+    confirmDeleteNote (id) {
       const $this = this
       $this.$swal({
         title: 'Are you sure?',
@@ -68,16 +66,21 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-      }).then(async function (willDelete) {
+      }).then(function (willDelete) {
         if (willDelete.value) {
-          const response = await TodoService.deleteNote(qs.stringify({ id: id }))
-          if (response.data.success) {
-            $this.fetchNotes()
-          } else {
-            $this.errors = response.data.err
-          }
+          $this.deleteNote(id)
         }
       })
+    },
+    async deleteNote (id) {
+      console.log('inside Notes: deleteNote(id): id = ', id)
+      console.log('qs.stringify({ id: id }) = ', qs.stringify({ id: id }))
+      const response = await TodoService.deleteNote(qs.stringify({ id: id }))
+      if (response.data.success) {
+        this.fetchNotes()
+      } else {
+        this.errors = response.data.err
+      }
     },
     async logout () {
       const response = await AuthService.logout()
