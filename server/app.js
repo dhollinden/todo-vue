@@ -49,14 +49,6 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors({credentials: true, origin: 'http://localhost:8080'}));
-/*
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-});
-*/
 
 // clarify need for these
 // app.use(express.json());
@@ -80,8 +72,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-// routers
+// ROUTERS
 app.use('/', indexRouter);
+
 // redirect unauthenticated users from /account to home page
 app.use('/account', (req, res, next) => {
     if(!req.isAuthenticated())
@@ -89,6 +82,7 @@ app.use('/account', (req, res, next) => {
     else
         next()
 }, accountRouter);
+
 // redirect unauthenticated users from /notes to home page
 app.use('/notes', (req, res, next) => {
     if(!req.isAuthenticated())
@@ -98,6 +92,7 @@ app.use('/notes', (req, res, next) => {
 }, notesRouter);
 
 
+// ERRORS
 // catch 404 and forward to error handler
 app.use( (req, res, next) => {
     const err = new Error('Not Found');
