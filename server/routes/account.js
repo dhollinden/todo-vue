@@ -7,17 +7,6 @@ const user_controller = require('../controllers/userController');
 
 // ROUTES
 
-
-// View account
-// GET
-router.get('/', user_controller.account);
-
-
-// Delete account
-// GET
-router.get('/delete', user_controller.account_delete);
-
-
 // Update email
 //GET
 router.get('/email', user_controller.account_email_get);
@@ -25,11 +14,13 @@ router.get('/email', user_controller.account_email_get);
 router.post('/email', user_controller.account_email_post);
 
 
-// Update password
-// GET
-router.get('/password', user_controller.account_password_get);
-// POST
+// Update password POST
 router.post('/password', user_controller.account_password_post);
+
+
+// Delete account
+// GET
+router.get('/delete', user_controller.account_delete);
 
 
 module.exports = router;
