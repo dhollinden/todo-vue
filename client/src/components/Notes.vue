@@ -1,10 +1,7 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <div>
-        <router-link v-bind:to="{ name: 'MyAccount' }" class="">My Account</router-link>
-        <b-link @click="logout()">Logout</b-link>
-      </div>
+      <NavBar />
       <h2>My Notes</h2>
       <div><router-link v-bind:to="{ name: 'AddNote' }" class="">Add Note</router-link>
       </div>
@@ -26,7 +23,6 @@
 <script>
 
 import TodoService from '@/services/TodoService'
-import AuthService from '@/services/AuthService'
 import qs from 'querystring'
 
 export default {
@@ -76,14 +72,6 @@ export default {
       const response = await TodoService.deleteNote(qs.stringify({ id: id }))
       if (response.data.success) {
         this.fetchNotes()
-      } else {
-        this.errors = response.data.err
-      }
-    },
-    async logout () {
-      const response = await AuthService.logout()
-      if (response.data.success) {
-        this.$router.push({ name: 'Login' })
       } else {
         this.errors = response.data.err
       }

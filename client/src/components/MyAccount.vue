@@ -1,10 +1,7 @@
 <template>
   <b-row class="justify-content-md-center">
     <b-col cols="6">
-      <div>
-        <router-link v-bind:to="{ name: 'Notes' }" class="">My Notes</router-link>
-        <b-link @click="logout()">Logout</b-link>
-      </div>
+      <NavBar />
       <h2>My Account</h2>
       <div v-if="emailMessages && emailMessages.length">
         <div v-for="emailMessage of emailMessages" :key="emailMessage.id">
@@ -50,8 +47,8 @@
                       label="New Password">
           <b-form-input id="new_password" :type='passwordFieldType' v-model.trim="password.new_password" autocomplete="new password"></b-form-input>
         </b-form-group>
-        <b-button type="submit" variant="primary">Update Password</b-button>
         <b-button type="button" @click="switchVisibility">show / hide</b-button>
+        <b-button type="submit" variant="primary">Update Password</b-button>
       </b-form>
       <div>&nbsp;</div>
       <div>&nbsp;</div>
@@ -66,8 +63,9 @@
                       :label-cols="4"
                       breakpoint="md"
                       label="Delete Account">
-          <b-button type="submit" variant="primary">Delete Account</b-button>
+
         </b-form-group>
+        <b-button type="submit" variant="primary">Delete Account</b-button>
         </b-form>
     </b-col>
   </b-row>
@@ -76,7 +74,6 @@
 <script>
 
 import MyAccountService from '@/services/MyAccountService'
-import AuthService from '@/services/AuthService'
 import qs from 'querystring'
 
 export default {
@@ -158,14 +155,6 @@ export default {
         this.$router.push({ name: 'Login' })
       } else {
         this.deleteMessages = response.data.err
-      }
-    },
-    async logout () {
-      const response = await AuthService.logout()
-      if (response.data.success) {
-        this.$router.push({ name: 'Login' })
-      } else {
-        this.errors = response.data.err
       }
     },
     switchVisibility () {

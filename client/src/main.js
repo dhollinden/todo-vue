@@ -7,10 +7,12 @@ import VueSweetalert2 from 'vue-sweetalert2'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import NavBar from './components/NavBar'
 
 Vue.use(VueSweetalert2)
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
+Vue.component('NavBar', NavBar)
 
 /* eslint-disable no-new */
 new Vue({
