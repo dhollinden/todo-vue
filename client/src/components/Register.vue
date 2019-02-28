@@ -21,8 +21,8 @@
                       breakpoint="md"
                       label="Enter Password">
           <b-form-input :type='passwordFieldType' id="password" v-model.trim="register.password"></b-form-input>
-          <b-button type="button" @click="switchVisibility">show / hide</b-button>
         </b-form-group>
+        <b-button type="button" @click="switchVisibility">show / hide</b-button>
         <b-button type="submit" variant="primary">Register</b-button>
         <b-button type="button" variant="success" @click="$router.go(-1)">Cancel</b-button>
       </b-form>
