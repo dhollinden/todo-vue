@@ -59,6 +59,7 @@ passport.serializeUser((user, done) => {
     // given a user, call "done" with the user.id
 
     done(null, user._id);
+
 });
 
 
@@ -74,21 +75,9 @@ passport.deserializeUser((id, done) => {
 
         .then( user => {
 
-/*
-            // for some reason
-            // the 'done' callback needs to be called with user[0].id for DynamoDB
-            console.log("process.env.DB = ", process.env.DB)
-            console.log("deserializeUser: input parameter: id = ", id)
-            console.log(`typeof id = ${typeof id}`)
-            console.log("user[0] = ", user[0])
-            console.log("user[0]._id = ", user[0]._id)
-            console.log(`typeof user[0]._id = ${typeof user[0]._id}`)
-            console.log("user[0].id = ", user[0].id)
-            console.log(`typeof user[0].id = ${typeof user[0].id}`)
-*/
-
             // if user is found, return "done" with the user
 
+            // for some reason, the 'done' callback needs to be called with user[0].id for DynamoDB
             user[0].id = user[0]._id
 
             return done(null, user[0]);
@@ -108,38 +97,6 @@ passport.deserializeUser((id, done) => {
 
 
 // ------------- callbacks -------------
-
-// home page GET
-exports.index = function (req, res, next) {
-
-    const message = req.query.message;
-    const pageContent = {
-
-        title: 'Notes Home',
-        message: message,
-        authenticated: req.isAuthenticated()
-
-    }
-
-    res.render('index', pageContent);
-
-}
-
-
-// signup GET
-exports.signup_get = function (req, res, next) {
-
-    const pageContent = {
-
-        title: 'Sign Up',
-        authenticated: req.isAuthenticated()
-
-    }
-
-    res.render('user_form', pageContent);
-
-};
-
 
 // signup POST
 exports.signup_post = [
@@ -167,11 +124,10 @@ exports.signup_post = [
 
         if (!errors.isEmpty()) {
 
-            // validation errors, render again with error messages and sanitized email
+            // there are validation errors, so send them in response
 
-            res.send({
-                err: errors.array()
-            })
+            res.send({ err: errors.array() })
+
         }
 
         else {
@@ -187,25 +143,17 @@ exports.signup_post = [
 
                     if (other_user_with_email[0]) {
 
-                        // email has been used, render again with error message
+                        // email is already in use, send error message in response
 
-                        const emailInUse = {
-                            err: [
-                                {
-                                    msg: "That email address has already been signed up. Please try another one."
-                                }
-                            ]
-                        }
-                        res.send(emailInUse)
+                        const err = [ { msg: "That email address is already in use. Please try another one." } ]
+                        res.send( { err: err } )
 
                     }
 
-                    // email is unique, hash the password
+                    // email is not in use, so hash password and create user
 
                     const saltRounds = 10;
                     passwordHashed = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(saltRounds));
-
-                    // save user
 
                     const item = 'user'
                     const criteria = {
@@ -219,7 +167,7 @@ exports.signup_post = [
 
                         .then( created_user => {
 
-                            // user was created, redirect to login page
+                            // user was created, so send success message
 
                             res.send({ success: true })
 
@@ -237,23 +185,6 @@ exports.signup_post = [
         }
     }
 ];
-
-
-// login GET
-exports.login_get = function (req, res, next) {
-
-    const message = req.query.message;
-    const pageContent = {
-
-        title: 'Log In',
-        message: message,
-        authenticated: req.isAuthenticated()
-
-    }
-
-    res.render('user_form', pageContent);
-
-};
 
 
 // login page POST
@@ -276,23 +207,15 @@ exports.login_post = [
 
     (req, res, next) => {
 
-        console.log('inside login_post: processing request')
-        console.log('inside login_post: req.body.email = ', req.body.email)
-        console.log('inside login_post: req.body.password = ', req.body.password)
-
         // Extract the validation errors
 
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
 
-            console.log('inside login_post: there are validation errors')
+            // there are validation errors, so send them in response
 
-            // validation errors, render again with error messages and sanitized values
-
-            res.send({
-                err: errors.array()
-            })
+            res.send({ err: errors.array() })
 
         }
 
@@ -302,48 +225,26 @@ exports.login_post = [
 
             passport.authenticate('local', (err, user, info) => {
 
-                // check for authentication error
+                // check for error during authentication
 
                 if (err) return next(err);
 
-                // if Passport returns "info" about problems with credentials, render page again
+                // Passport returns "info" when there are problems with credentials, so send "info" in response
 
                 if (info) {
 
-/*
-                    const pageContent = {
-
-                        title: 'Log In',
-                        email: req.body.email,
-                        password: req.body.password,
-                        message: info.message,
-                        authenticated: req.isAuthenticated()
-
-                    }
-
-                    return res.render('user_form', pageContent);
-*/
-
-
-                    const passportInfo = {
-                        err: [
-                            {
-                                msg: info.message
-                            }
-                        ]
-                    }
-                    res.send(passportInfo)
+                    const err = [ { msg: info.message } ]
+                    res.send( { err: err } )
 
                 }
 
-                // authentication was successful, so log user in
+                // authentication was successful, so log in the user
 
                 req.login(user, (err) => {
 
-                    console.log('inside login_post: authentication was successful')
-                    console.log('inside login_post: authentication was successful, err = ', err)
-
                     if (err) return next(err);
+
+                    // login was successful, so respond with success msg
 
                     res.send({ success: true })
 
@@ -355,7 +256,7 @@ exports.login_post = [
 ];
 
 
-// logout POST
+// logout GET
 exports.logout_get = function (req, res, next) {
 
     req.logout();
@@ -365,106 +266,11 @@ exports.logout_get = function (req, res, next) {
 
 
 
-// account GET
-exports.account = function (req, res, next) {
-
-    const message = req.query.message;
-
-    getAllNotesForUser(req.user.id)
-
-        .then(notes => {
-
-            // render page
-
-            const pageContent = {
-
-                title: 'My Account',
-                email: req.user.email,
-                user_id: req.user.id,
-                notes: notes,
-                message: message,
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('user_account', pageContent);
-
-        })
-
-        .catch( err => {
-
-            if (err) return next(err);
-
-        });
-
-};
-
-
-
-// account delete GET
-exports.account_delete = function (req, res, next) {
-
-    console.log('inside account_delete')
-    console.log('inside account_delete: req.user.id = ', req.user.id)
-
-    // delete notes first
-
-    const item = 'note';
-    const criteria = { 'user_id': req.user.id };
-
-    remove(item, criteria)
-
-        .then( deleted_notes => {
-
-            // then delete user
-
-            const item = 'user';
-            const criteria = { '_id': req.user.id };
-
-            remove(item, criteria)
-
-                .then( deleted_user => {
-
-                // logout user, respond with success
-
-                    console.log('inside account_delete: delete success')
-
-                    req.logOut()
-
-                    res.send({ success: true })
-
-            })
-
-        })
-        .catch( err => {
-
-            if (err) return next(err);
-
-        });
-
-}
-
-
 // account email update GET
 exports.account_email_get = function (req, res, next) {
 
-    // render page
-
-/*
-    const pageContent = {
-
-        title: 'My Account: Update Email Address',
-        email: req.user.email,
-        message: req.query.message,
-        authenticated: req.isAuthenticated()
-
-    }
-
-    res.render('user_email_form', pageContent);
-*/
-
-    console.log('inside account_email_get, email = ', req.user.email)
     res.send({ email: req.user.email })
+
 }
 
 
@@ -474,7 +280,7 @@ exports.account_email_post = [
 
     // Validate email
 
-    body('new_email', 'Please enter a valid email address for the new email address.')
+    body('new_email', 'Please enter a valid email address.')
         .isEmail(),
 
     // Sanitize email
@@ -491,7 +297,7 @@ exports.account_email_post = [
 
         if (!errors.isEmpty()) {
 
-            // there are errors, so render again with error messages
+            // there are validation errors, so send them in response
 
             res.send({ err: errors.array() })
 
@@ -506,20 +312,14 @@ exports.account_email_post = [
 
             read(item, criteria)
 
-                .then( existing_user => {
+                .then( other_user_with_email => {
 
-                    if (existing_user[0]) {
+                    if (other_user_with_email[0]) {
 
-                        // email has been used, render again with error message
+                        // email is already in use, send error message in response
 
-                        const emailInUse = {
-                            err: [
-                                {
-                                    msg: "That new email address has already been used. Please try another one."
-                                }
-                            ]
-                        }
-                        res.send(emailInUse)
+                        const err = [ { msg: "That email address is already in use. Please try another one." } ]
+                        res.send( { err: err } )
 
                     } else {
 
@@ -532,6 +332,8 @@ exports.account_email_post = [
                         update(item, criteria, updates)
 
                             .then( updated_user => {
+
+                                // update is successful, so respond with success msg and new email address
 
                                 res.send({
                                     success: true,
@@ -552,26 +354,6 @@ exports.account_email_post = [
         }
     }
 ];
-
-
-
-// account password update GET
-exports.account_password_get = function (req, res, next) {
-
-    // render page
-
-    const message = req.query.message;
-    const pageContent = {
-
-        title: 'My Account: Update Password',
-        message: message,
-        authenticated: req.isAuthenticated()
-
-    }
-
-    res.render('user_password_form', pageContent);
-
-}
 
 
 
@@ -596,21 +378,7 @@ exports.account_password_post = [
 
         if (!errors.isEmpty()) {
 
-            // there are errors, so render again with error messages
-
-/*
-            const pageContent = {
-
-                title: 'My Account: Update Password',
-                errors: errors.array(),
-                cur_password: req.body.cur_password,
-                new_password: req.body.new_password,
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('user_password_form', pageContent);
-*/
+            // there are validation errors, so send them in response
 
             res.send({ err: errors.array() })
 
@@ -622,31 +390,10 @@ exports.account_password_post = [
 
             if (!bcrypt.compareSync(req.body.cur_password, req.user.password)) {
 
-                // no match, so render page with error message
+                // it doesn't match, so respond with error message
 
-/*
-                const pageContent = {
-
-                    title: 'My Account: Update Password',
-                    message: 'incorrect_password',
-                    cur_password: req.body.cur_password,
-                    new_password: req.body.new_password,
-                    authenticated: req.isAuthenticated()
-
-                }
-
-                res.render('user_password_form', pageContent);
-*/
-
-                const passwordNoMatch = {
-                    err: [
-                        {
-                            msg: "The current password you entered isn't correct."
-                        }
-                    ]
-                }
-
-                res.send(passwordNoMatch)
+                const err = [ { msg: "The current password you entered isn't correct." } ]
+                res.send( { err: err } )
 
             }
 
@@ -667,10 +414,9 @@ exports.account_password_post = [
 
                     .then( result => {
 
-                        res.send({
-                            success: true,
-                            new_password: req.body.new_password
-                        })
+                        // update is successful, so respond with success msg
+
+                        res.send({ success: true })
 
                     })
                     .catch( err => {
@@ -684,5 +430,44 @@ exports.account_password_post = [
         }
     }
 ];
+
+
+// account delete GET
+exports.account_delete = function (req, res, next) {
+
+    // delete all notes for user first
+
+    const item = 'note';
+    const criteria = { 'user_id': req.user.id };
+
+    remove(item, criteria)
+
+        .then( deleted_notes => {
+
+            // then delete user
+
+            const item = 'user';
+            const criteria = { '_id': req.user.id };
+
+            remove(item, criteria)
+
+                .then( deleted_user => {
+
+                    // logout user, respond with success
+
+                    req.logOut()
+
+                    res.send({ success: true })
+
+                })
+
+        })
+        .catch( err => {
+
+            if (err) return next(err);
+
+        });
+
+}
 
 

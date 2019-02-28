@@ -5,16 +5,16 @@ const { read, create, update, remove } = require('../modules/' + process.env.DB)
 const { getAllNotesForUser, findNoteById, findAnotherNoteWithSameName } = require('../modules/note_functions');
 
 
-// notes home GET - display menu with all notes
+// notes home GET - respond with all notes for user
 exports.index = (req, res, next) => {
 
     getAllNotesForUser(req.user.id)
 
         .then(notes => {
 
-            // send notes
+            // send notes in response
 
-            res.send({success: true, notes: notes})
+            res.send({ success: true, notes: notes })
 
         })
 
@@ -27,46 +27,27 @@ exports.index = (req, res, next) => {
 };
 
 
-// note detail - display an individual note and menu with all notes
-// POST requests from notes menu are routed here
-// GET requests from redirects in note_create_post and note_update_post are routed here with note id in params
-
+// note detail GET - respond with individual note
 exports.note_detail = (req, res, next) => {
 
-    // get ID  of requested note
-
-    const requestedNoteId = req.params.id ? req.params.id : req.body.id;
-
-    console.log('inside note_detail: requestedNoteId = ', requestedNoteId)
+    const requestedNoteId = req.params.id;
 
     getAllNotesForUser(req.user.id)
 
         .then(notes => {
 
-            // if user does not have note with requestedNoteId, redirect
-
             const requestedNote = findNoteById(notes, requestedNoteId);
+
             if (!requestedNote) {
-                return res.redirect('/notes?message=invalidId');
-            }
 
-            // render page with requestedNote
+                // user does not have note with requestedNoteId, so respond with err msg
 
-/*
-            const pageContent = {
-
-                title: 'My Notes',
-                selectedNote: requestedNote,
-                notes: notes,
-                message: req.query.message,
-                authenticated: req.isAuthenticated()
+                const err = [ { msg: "There's no note with that id." } ]
+                res.send( { err: err } )
 
             }
 
-            res.render('note_detail', pageContent);
-*/
-
-            console.log('inside note_detail: requestedNote = ', requestedNote)
+            // requested note was found, so respond with success msg and note
 
             res.send({ success: true, note: requestedNote})
 
@@ -77,21 +58,6 @@ exports.note_detail = (req, res, next) => {
             if (err) return next(err);
 
         });
-
-};
-
-
-// note create on GET
-exports.note_create_get = (req, res, next) => {
-
-    const pageContent = {
-
-        title: 'Create Note',
-        authenticated: req.isAuthenticated()
-
-    }
-
-    res.render('note_form', pageContent);
 
 };
 
@@ -133,7 +99,7 @@ exports.note_create_post = [
 
         if (!errors.isEmpty()) {
 
-            // validation errors, send back errors
+            // there are validation errors, so send them in response
 
             res.send({ err: errors.array() })
 
@@ -145,14 +111,14 @@ exports.note_create_post = [
 
                 .then(notes => {
 
-                    // if user has another note with same name, render form again with sanitized values
+                    // if user has another note with same name, respond with err msg
 
                     const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, null, req.body.name);
 
                     if (anotherNoteWithSameName) {
 
-                        const emailInUse = { err: [ { msg: "A note with that name already exists" } ] }
-                        res.send(emailInUse)
+                        const err = [ { msg: "You already have a note with that name." } ]
+                        res.send( { err: err } )
 
                     }
 
@@ -163,6 +129,8 @@ exports.note_create_post = [
                     create(item, sanitizedNote)
 
                         .then( createdNote => {
+
+                            // note was created, respond with success msg
 
                             res.send({ success: true })
 
@@ -180,46 +148,6 @@ exports.note_create_post = [
     }
 ];
 
-
-// note update on GET
-exports.note_update_get = (req, res, next) => {
-
-    // get ID  of requested note
-
-    const requestedNoteId = req.params.id;
-
-    getAllNotesForUser(req.user.id)
-
-        .then(notes => {
-
-            // if user does not have note with requestedNoteId, redirect
-
-            const requestedNote = findNoteById(notes, requestedNoteId);
-            if (!requestedNote) {
-                return res.redirect('/notes?message=invalidId');
-            }
-
-            // render page
-
-            const pageContent = {
-
-                title: 'Update Note',
-                selectedNote: requestedNote,
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('note_form', pageContent);
-
-        })
-
-        .catch( err => {
-
-            if (err) return next(err);
-
-        });
-
-}
 
 // note update on POST
 exports.note_update_post = [
@@ -261,7 +189,7 @@ exports.note_update_post = [
 
         if (!errors.isEmpty()) {
 
-            // validation errors, render form again with sanitized values
+            // there are validation errors, so send them in response
 
             res.send({ err: errors.array() })
 
@@ -277,34 +205,25 @@ exports.note_update_post = [
 
                 .then(notes => {
 
-                    // if user does not have note with requestedNoteId, redirect
-
                     const requestedNote = findNoteById(notes, requestedNoteId);
+
+                    // if user does not have note with requestedNoteId, respond with err msg
+
                     if (!requestedNote) {
 
-                        // return res.redirect('/notes?message=invalidId');
-                        res.send({ errors: 'Invalid message ID'})
+                        const err = [ { msg: "There's no note with that id." } ]
+                        res.send( { err: err } )
 
                     }
 
-                    // if user has another note with same name, render again with error message and sanitized values
+                    // if user has another note with same name, respond with err msg
 
-                    const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, requestedNoteId, req.body.name);
+                    const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, null, req.body.name);
+
                     if (anotherNoteWithSameName) {
 
-/*
-                        const pageContent = {
-
-                            title: 'Update Note',
-                            selectedNote: sanitizedNote,
-                            message: 'name_exists',
-                            authenticated: req.isAuthenticated()
-
-                        }
-
-                        return res.render('note_form', pageContent);
-*/
-                        res.send({ errors: 'A note with that name already exists'})
+                        const err = [ { msg: "You already have a note with that name." } ]
+                        res.send( { err: err } )
 
                     }
 
@@ -328,9 +247,8 @@ exports.note_update_post = [
 
                         .then(updated_note => {
 
-                            // redirect to sanitizedNote._id because update does not return a document
+                            // note was updated, so respond with success msg
 
-                            // res.redirect(`/notes/${sanitizedNote._id}?message=noteUpdated`);
                             res.send({
                                 success: true
                             })
@@ -350,53 +268,10 @@ exports.note_update_post = [
 ];
 
 
-// note delete GET
-exports.note_delete_get = (req, res, next) => {
-
-    // get ID  of requested note
-
-    const requestedNoteId = req.params.id;
-
-    getAllNotesForUser(req.user.id)
-
-        .then(notes => {
-
-            // if user does not have note with requestedNoteId, redirect
-
-            const requestedNote = findNoteById(notes, requestedNoteId);
-            if (!requestedNote) {
-                return res.redirect('/notes?message=invalidId');
-            }
-
-            // render page
-
-            const pageContent = {
-
-                title: 'Delete Note',
-                selectedNote: requestedNote,
-                authenticated: req.isAuthenticated()
-
-            }
-
-            res.render('note_delete', pageContent);
-
-        })
-
-        .catch( err => {
-
-            if (err) return next(err);
-
-        });
-
-}
-
-
 // note delete POST
 exports.note_delete_post = (req, res, next) => {
 
     // get ID  of requested note
-
-    console.log('inside note_delete_post: req.body.id = ', req.body.id)
 
     const requestedNoteId = req.body.id;
 
@@ -404,39 +279,32 @@ exports.note_delete_post = (req, res, next) => {
 
         .then(notes => {
 
-            // if user does not have note with requestedNoteId, redirect
-
             const requestedNote = findNoteById(notes, requestedNoteId);
 
-            console.log('inside note_delete_post: requestedNote = ', requestedNote)
+            // if user does not have note with requestedNoteId, respond with err msg
 
             if (!requestedNote) {
 
-                // return res.redirect('/notes?message=invalidId');
+                const err = [ { msg: "There's no note with that id." } ]
+                res.send( { err: err } )
 
-                console.log('inside note_delete_post: invalid id ')
+            }
 
-                res.send({ err: [ { msg: "Invalid note ID" } ] })
+            else {
 
-            } else {
-
-                // delete requestedNote, redirect to notes page
-
-                console.log('inside note_delete_post: deleting note')
+                // delete requestedNote
 
                 const item = 'note';
                 const criteria = {
-
                     '_id': requestedNoteId,
                     'user_id': req.user.id
-
                 };
 
                 remove(item, criteria)
 
                     .then(deleted_note => {
 
-                        // res.redirect('/notes?message=note_deleted');
+                        // note was deleted, so respond with success msg
 
                         res.send({ success: true })
 
