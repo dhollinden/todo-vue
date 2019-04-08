@@ -113,14 +113,14 @@ exports.note_create_post = [
 
                     // if user has another note with same name, respond with err msg
 
-                    const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, null, req.body.name);
+                    /*const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, null, req.body.name);
 
                     if (anotherNoteWithSameName) {
 
                         const err = [ { msg: "You already have a note with that name." } ]
                         res.send( { err: err } )
 
-                    }
+                    }*/
 
                     // save note, redirect to note detail page
 
@@ -218,14 +218,14 @@ exports.note_update_post = [
 
                     // if user has another note with same name, respond with err msg
 
-                    const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, null, req.body.name);
+                    /*const anotherNoteWithSameName = findAnotherNoteWithSameName(notes, null, req.body.name);
 
                     if (anotherNoteWithSameName) {
 
                         const err = [ { msg: "You already have a note with that name." } ]
                         res.send( { err: err } )
 
-                    }
+                    }*/
 
                     // update note with sanitized values, redirect to note detail page
 
