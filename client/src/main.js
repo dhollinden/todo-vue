@@ -3,7 +3,6 @@ import '@babel/polyfill'
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import './plugins/vuetify'
-import './plugins/vuetify'
 import App from './App'
 import router from './router'
 import VueSweetalert2 from 'vue-sweetalert2'
