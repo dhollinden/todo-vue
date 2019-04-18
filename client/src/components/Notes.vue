@@ -1,7 +1,6 @@
 <template>
   <b-row>
     <b-col cols="12">
-      <NavBar />
       <h2>My Notes</h2>
       <div><router-link v-bind:to="{ name: 'AddNote' }" class="">Add Note</router-link>
       </div>

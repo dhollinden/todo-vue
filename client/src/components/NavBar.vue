@@ -23,10 +23,10 @@
             <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
             <v-spacer class="hidden-md-and-up"></v-spacer>
             <v-toolbar-title>{{appTitle}}</v-toolbar-title>
-            <v-btn flat class="hidden-sm-and-down">Menu</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/Notes">Notes</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
-            <v-btn flat class="hidden-sm-and-down">SIGN IN</v-btn>
-            <v-btn color="brown lighten-3" class="hidden-sm-and-down">JOIN</v-btn>
+            <v-btn flat class="hidden-sm-and-down" to="/Login">SIGN IN</v-btn>
+            <v-btn color="brown lighten-3" class="hidden-sm-and-down" to="/Register">JOIN</v-btn>
         </v-toolbar>
     </span>
 </template>
@@ -42,7 +42,7 @@ export default {
       appTitle: 'Lister',
       drawer: false,
       items: [
-        { title: 'Menu' },
+        { title: 'Notes' },
         { title: 'Sign In' },
         { title: 'Join' }
       ]
