@@ -1,9 +1,7 @@
 <template>
+<!--
   <b-row>
     <b-col cols="12">
-      <h2>My Notes</h2>
-      <div><router-link v-bind:to="{ name: 'AddNote' }" class="">Add Note</router-link>
-      </div>
       <ul v-if="errors && errors.length">
         <li v-for="error of errors" :key="error.id">
           <b-alert show>{{error.msg}}</b-alert>
@@ -17,6 +15,38 @@
       </b-table>
     </b-col>
   </b-row>
+-->
+  <v-container grid-list-lg>
+    <v-layout row wrap>
+      <v-flex xs12 sm12 md4 v-for="(note, index) in notes" :key="index">
+        <v-card>
+          <v-toolbar color="cyan" dark>
+            <v-toolbar-side-icon></v-toolbar-side-icon>
+
+            <v-toolbar-title>{{ note.name }}</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
+            <v-btn icon>
+              <v-icon>search</v-icon>
+            </v-btn>
+          </v-toolbar>
+
+          <v-list two-line>
+            <template>
+              <v-list-tile
+                :key="index"
+              >
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="note.body"></v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -28,11 +58,6 @@ export default {
   name: 'Notes',
   data () {
     return {
-      fields: {
-        name: { label: 'Note Name', sortable: true, 'class': 'text-center' },
-        body: { label: 'Note', sortable: true },
-        actions: { label: 'Action', 'class': 'text-center' }
-      },
       notes: [],
       errors: []
     }
