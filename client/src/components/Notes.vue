@@ -18,32 +18,44 @@
 -->
   <v-container grid-list-lg>
     <v-layout row wrap>
-      <v-flex xs12 sm12 md4 v-for="(note, index) in notes" :key="index">
-        <v-card>
+      <v-flex xs12 sm12 md6 v-for="(note, index) in notes" :key="index">
           <v-toolbar color="cyan" dark>
             <v-toolbar-side-icon></v-toolbar-side-icon>
-
             <v-toolbar-title>{{ note.name }}</v-toolbar-title>
-
             <v-spacer></v-spacer>
-
-            <v-btn icon>
-              <v-icon>search</v-icon>
-            </v-btn>
+            <!--
+            <v-btn icon><v-icon>check_box_outline_blank</v-icon></v-btn>
+            <v-btn icon><v-icon>check_box</v-icon></v-btn>
+            -->
+            <v-btn icon><v-icon>edit</v-icon></v-btn>
+            <v-btn icon href="#" @click="confirmDeleteNote(note._id)"><v-icon>delete</v-icon></v-btn>
           </v-toolbar>
 
-          <v-list two-line>
+          <v-list>
+            <!-- the template could be <template v-for="(item, index) in items"> when there are multiple todos per list -->
             <template>
-              <v-list-tile
-                :key="index"
-              >
+              <v-list-tile>
+                <!--
+                <v-list-tile-action>
+                  <span>
+                    <v-btn icon><v-icon>check_box_outline_blank</v-icon></v-btn>
+                  </span>
+                -->
+                </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title v-html="note.body"></v-list-tile-title>
                 </v-list-tile-content>
+                <!--
+                <v-list-tile-action>
+                  <span>
+                    <v-btn icon><v-icon>edit</v-icon></v-btn>
+                    <v-btn icon href="#" @click="confirmDeleteNote(note._id)"><v-icon>delete</v-icon></v-btn>
+                  </span>
+                </v-list-tile-action>
+                -->
               </v-list-tile>
             </template>
           </v-list>
-        </v-card>
       </v-flex>
     </v-layout>
   </v-container>
