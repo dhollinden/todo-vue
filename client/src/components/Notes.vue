@@ -17,35 +17,39 @@
   </b-row>
 -->
   <v-container grid-list-lg>
+    <v-layout>
+      <v-spacer></v-spacer>
+      <v-btn color="cyan darken-1" flat to="/AddNote" dark>ADD Note</v-btn>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs12 sm12 md6 v-for="(note, index) in notes" :key="index">
           <v-toolbar color="cyan" dark>
             <v-toolbar-side-icon></v-toolbar-side-icon>
             <v-toolbar-title>{{ note.name }}</v-toolbar-title>
             <v-spacer></v-spacer>
-            <!--
+            <!-- for displaying only unchecked/checked items
             <v-btn icon><v-icon>check_box_outline_blank</v-icon></v-btn>
             <v-btn icon><v-icon>check_box</v-icon></v-btn>
             -->
-            <v-btn icon><v-icon>edit</v-icon></v-btn>
-            <v-btn icon href="#" @click="confirmDeleteNote(note._id)"><v-icon>delete</v-icon></v-btn>
+            <v-btn icon v-bind:to="{ name: 'EditNote', params: { id: note._id } }"><v-icon>edit</v-icon></v-btn>
+            <v-btn icon href="#" @click.stop="confirmDelete(note._id)"><v-icon>delete</v-icon></v-btn>
           </v-toolbar>
 
           <v-list>
             <!-- the template could be <template v-for="(item, index) in items"> when there are multiple todos per list -->
             <template>
               <v-list-tile>
-                <!--
+                <!-- for initial checkbox
                 <v-list-tile-action>
                   <span>
                     <v-btn icon><v-icon>check_box_outline_blank</v-icon></v-btn>
                   </span>
-                -->
                 </v-list-tile-action>
+                -->
                 <v-list-tile-content>
                   <v-list-tile-title v-html="note.body"></v-list-tile-title>
                 </v-list-tile-content>
-                <!--
+                <!-- edit and delete buttons
                 <v-list-tile-action>
                   <span>
                     <v-btn icon><v-icon>edit</v-icon></v-btn>
@@ -57,6 +61,19 @@
             </template>
           </v-list>
       </v-flex>
+    </v-layout>
+    <v-layout row justify-center>
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Delete this note?</v-card-title>
+          <v-card-text>note ID to delete is  </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click="dialog = false">Cancel</v-btn>
+            <v-btn color="green darken-1" flat @click="deleteNote()">Delete</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -71,7 +88,8 @@ export default {
   data () {
     return {
       notes: [],
-      errors: []
+      errors: [],
+      dialog: false
     }
   },
   mounted () {
@@ -88,26 +106,16 @@ export default {
         this.errors = response.data.err
       }
     },
-    confirmDeleteNote (id) {
-      const $this = this
-      $this.$swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(function (willDelete) {
-        if (willDelete.value) {
-          $this.deleteNote(id)
-        }
-      })
+    confirmDelete (id) {
+      this.dialog = true
+      this.deleteId = id
     },
-    async deleteNote (id) {
-      const response = await TodoService.deleteNote(qs.stringify({ id: id }))
+    async deleteNote () {
+      this.dialog = false
+      const response = await TodoService.deleteNote(qs.stringify({ id: this.deleteId }))
       if (response.data.success) {
         this.fetchNotes()
+        this.deleteId = ''
       } else {
         this.errors = response.data.err
       }
