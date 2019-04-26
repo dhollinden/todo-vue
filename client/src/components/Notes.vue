@@ -22,6 +22,23 @@
       <v-btn color="cyan darken-1" flat to="/AddNote" dark>ADD Note</v-btn>
     </v-layout>
     <v-layout row wrap>
+      <v-flex xs12 sm12 md12>
+        <v-alert
+          :value="alert"
+          color="error"
+          icon="warning"
+          outline
+        >
+          This is an error alert.
+          <ul>
+            <li v-for="error of errors" :key="error.id">
+              {{error.msg}}
+            </li>
+          </ul>
+        </v-alert>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
       <v-flex xs12 sm12 md6 v-for="(note, index) in notes" :key="index">
           <v-toolbar color="cyan" dark>
             <v-toolbar-side-icon></v-toolbar-side-icon>
@@ -89,7 +106,8 @@ export default {
     return {
       notes: [],
       errors: [],
-      dialog: false
+      dialog: false,
+      alert: false
     }
   },
   mounted () {
@@ -104,6 +122,7 @@ export default {
         this.notes = response.data.notes
       } else {
         this.errors = response.data.err
+        this.alert = true
       }
     },
     confirmDelete (id) {
@@ -113,11 +132,12 @@ export default {
     async deleteNote () {
       this.dialog = false
       const response = await TodoService.deleteNote(qs.stringify({ id: this.deleteId }))
+      this.deleteId = ''
       if (response.data.success) {
         this.fetchNotes()
-        this.deleteId = ''
       } else {
         this.errors = response.data.err
+        this.alert = true
       }
     }
   }

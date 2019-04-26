@@ -1,4 +1,4 @@
-<template>
+<!--<template>
   <b-row class="justify-content-md-center">
     <b-col cols="6">
       <NavBar />
@@ -69,6 +69,101 @@
         </b-form>
     </b-col>
   </b-row>
+</template>-->
+
+<template>
+  <div>
+    <v-container grid-list-lg fluid>
+      <v-layout row wrap justify-center>
+        <!--Update Email Address-->
+        <v-flex xs12 sm8 md4 ma-3>
+          <v-alert :value="alertEmail" :type="alert_type" outline>
+            <ul>
+              <li v-for="emailMessage of emailMessages" :key="emailMessage.id">
+                {{emailMessage.msg}}
+              </li>
+            </ul>
+          </v-alert>
+          <v-card class="elevation-12">
+            <v-toolbar color="cyan" dark>
+              <v-toolbar-title>Update Email Address</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-form ref="form">
+                <v-text-field label="Current Email Address" name="cur_email" id="cur_email" type="text" v-model.trim="email.cur_email">
+                </v-text-field>
+                <v-text-field label="New Email Address" name="new_email" id="new_email" type="text" v-model.trim="email.new_email">
+                </v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <!--<v-btn flat color="cyan" @click="$router.go(-1)">Cancel</v-btn>-->
+              <v-btn flat color="cyan" @click="onEmailUpdateSubmit">Update</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+        <!--Update Password-->
+        <v-flex xs12 sm8 md4 ma-3>
+          <v-alert :value="alertPassword" :type="alert_type" outline>
+            <ul>
+              <li v-for="passwordMessage of passwordMessages" :key="passwordMessage.id">
+                {{passwordMessage.msg}}
+              </li>
+            </ul>
+          </v-alert>
+          <v-card class="elevation-12">
+            <v-toolbar color="cyan" dark>
+              <v-toolbar-title>Update Password</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <v-form ref="form">
+                <v-text-field label="Current Password" name="cur_password" id="cur_password" type="password" v-model.trim="password.cur_password">
+                </v-text-field>
+                <v-text-field label="New Password" name="new_password" id="new_password" type="password" v-model.trim="password.new_password">
+                </v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <!--<v-btn flat color="cyan" @click="$router.go(-1)">Cancel</v-btn>-->
+              <v-btn flat color="cyan" @click="onPasswordUpdateSubmit">Update</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-container>
+      <v-layout align-center justify-center>
+        <!--Delete Account-->
+        <v-flex xs12 sm6 md4 ma-3>
+          <v-card class="elevation-12">
+            <v-toolbar color="cyan" dark>
+              <v-toolbar-title>Delete Account</v-toolbar-title>
+            </v-toolbar>
+            <v-card-text>
+              <p><v-icon color="yellow">warning</v-icon> Deleting your account will delete all of your notes.</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn flat color="cyan" @click="confirmDelete">Delete</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-flex>
+        <v-dialog v-model="dialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">Delete Account?</v-card-title>
+            <v-card-text>Please confirm that you want to delete your account.</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" flat @click="dialog = false">Cancel</v-btn>
+              <v-btn color="green darken-1" flat @click="deleteAccount()">Delete</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-layout>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -85,7 +180,11 @@ export default {
       emailMessages: [],
       passwordMessages: [],
       deleteMessages: [],
-      passwordFieldType: 'password'
+      passwordFieldType: 'password',
+      alertEmail: false,
+      alertPassword: false,
+      alert_type: 'error',
+      dialog: false
     }
   },
   mounted () {
@@ -105,51 +204,46 @@ export default {
     async onEmailUpdateSubmit (evt) {
       evt.preventDefault()
       const response = await MyAccountService.updateEmail(qs.stringify(this.email))
+      this.alertEmail = true
       if (response.data.success) {
         this.email = {
           cur_email: response.data.new_email,
           new_email: ''
         }
         this.emailMessages = [{msg: 'Your email address was updated'}]
+        this.alert_type = 'success'
       } else {
         this.emailMessages = response.data.err
+        this.alert_type = 'error'
       }
       // clear any previous messages
       this.passwordMessages = ''
+      this.alertPassword = false
     },
     async onPasswordUpdateSubmit (evt) {
       evt.preventDefault()
       const response = await MyAccountService.updatePassword(qs.stringify(this.password))
+      this.alertPassword = true
       if (response.data.success) {
         this.password = {
           cur_password: '',
           new_password: ''
         }
         this.passwordMessages = [{msg: 'Your password was updated'}]
+        this.alert_type = 'success'
       } else {
         this.passwordMessages = response.data.err
+        this.alert_type = 'error'
       }
       // clear any previous messages
       this.emailMessages = ''
+      this.alertEmail = false
     },
-    onDeleteSubmit (evt) {
-      evt.preventDefault()
-      const $this = this
-      $this.$swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then(function (willDelete) {
-        if (willDelete.value) {
-          $this.deleteAccount()
-        }
-      })
+    confirmDelete () {
+      this.dialog = true
     },
     async deleteAccount () {
+      this.dialog = false
       const response = await MyAccountService.deleteAccount()
       if (response.data.success) {
         this.$router.push({ name: 'Login' })
