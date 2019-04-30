@@ -246,7 +246,7 @@ export default {
       this.dialog = false
       const response = await MyAccountService.deleteAccount()
       if (response.data.success) {
-        this.$router.push({ name: 'Login' })
+        this.$router.push({ name: 'Register' })
       } else {
         this.deleteMessages = response.data.err
       }

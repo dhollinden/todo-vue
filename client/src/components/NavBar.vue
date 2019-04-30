@@ -25,8 +25,10 @@
             <v-toolbar-title>{{appTitle}}</v-toolbar-title>
             <v-btn flat class="hidden-sm-and-down" to="/Notes">Notes</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
-            <v-btn flat class="hidden-sm-and-down" to="/Login">SIGN IN</v-btn>
-            <v-btn color="brown lighten-3" class="hidden-sm-and-down" to="/Register">JOIN</v-btn>
+            <v-btn class="hidden-sm-and-down" flat to="/Login" v-if="!signedIn">SIGN IN</v-btn>
+            <v-btn class="hidden-sm-and-down" flat @click="logout" v-if="signedIn">SIGN OUT</v-btn>
+            <v-btn class="hidden-sm-and-down" color="brown lighten-3" to="/Register" v-if="!signedIn">SIGN UP</v-btn>
+            <v-btn class="hidden-sm-and-down" color="brown lighten-3" to="/MyAccount" v-if="signedIn">MY ACCOUNT</v-btn>
         </v-toolbar>
     </span>
 </template>
@@ -34,6 +36,7 @@
 <script>
 
 import AuthService from '@/services/AuthService'
+import { eventBus } from '@/main'
 
 export default {
   name: 'NavBar',
@@ -45,17 +48,26 @@ export default {
         { title: 'Notes' },
         { title: 'Sign In' },
         { title: 'Join' }
-      ]
+      ],
+      signedIn: true
     }
+  },
+  created () {
+    // start listening to eventBus as soon as NavBar component is created
+    eventBus.$on('signedIn', (signedIn) => {
+      this.signedIn = signedIn
+    })
   },
   methods: {
     async logout () {
       const response = await AuthService.logout()
       if (response.data.success) {
+        this.signedIn = false
         this.$router.push({ name: 'Login' })
       } else {
         this.errors = response.data.err
       }
+      console.log('NavBar: logout() - signedIn = ', this.signedIn)
     }
   }
 }

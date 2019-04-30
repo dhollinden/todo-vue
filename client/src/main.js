@@ -12,6 +12,8 @@ Vue.use(VueSweetalert2)
 Vue.config.productionTip = false
 Vue.component('NavBar', NavBar)
 
+export const eventBus = new Vue()
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

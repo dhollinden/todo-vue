@@ -76,6 +76,7 @@
 
 import AuthService from '@/services/AuthService'
 import qs from 'querystring'
+import { eventBus } from '@/main'
 
 export default {
   name: 'Login',
@@ -84,7 +85,8 @@ export default {
       login: {},
       errors: [],
       alert: false,
-      passwordFieldType: 'password'
+      passwordFieldType: 'password',
+      signedIn: false
     }
   },
   methods: {
@@ -92,6 +94,9 @@ export default {
       evt.preventDefault()
       const response = await AuthService.login(qs.stringify(this.login))
       if (response.data.success) {
+        this.signedIn = true
+        eventBus.$emit('signedIn', this.signedIn)
+        console.log('Login.vue: emitted signedIn = true')
         this.$router.push({ name: 'Notes' })
       } else {
         this.errors = response.data.err
