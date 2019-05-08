@@ -49,7 +49,20 @@
             <v-btn class="hidden-sm-and-down" flat to="/Login" v-if="!signedIn">SIGN IN</v-btn>
             <v-btn class="hidden-sm-and-down" flat @click="logout" v-if="signedIn">SIGN OUT</v-btn>
             <v-btn class="hidden-sm-and-down" color="brown lighten-3" to="/Register" v-if="!signedIn">SIGN UP</v-btn>
-            <v-btn class="hidden-sm-and-down" flat to="/MyAccount" v-if="signedIn">MY ACCOUNT</v-btn>
+            <v-menu offset-y open-on-hover v-if="signedIn">
+              <template v-slot:activator="{ on }">
+                <v-btn class="hidden-sm-and-down" flat to="/MyAccount" v-on="on">MY ACCOUNT</v-btn>
+              </template>
+              <v-list>
+                <v-list-tile
+                  v-for="(item, index) in items"
+                  :key="index"
+                  :to="item.dest"
+                >
+                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
         </v-toolbar>
     </span>
 </template>
@@ -66,11 +79,9 @@ export default {
       appTitle: 'Lister',
       drawer: false,
       items: [
-        { title: 'Notes', icon: 'notes', dest: '/Notes', logic: this.signedIn },
-        { title: 'Sign In', dest: '/Login', logic: !this.signedIn },
-        { title: 'Sign Out', click: 'logout', logic: this.signedIn },
-        { title: 'Sign Up', dest: '/Register', logic: !this.signedIn },
-        { title: 'My Account', dest: '/MyAccount', logic: this.signedIn }
+        { title: 'Update Email Address', dest: '/UpdateEmail' },
+        { title: 'Update Password', dest: '/UpdatePassword' },
+        { title: 'Delete Account', dest: '/DeleteAccount' }
       ],
       signedIn: true
     }
