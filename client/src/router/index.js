@@ -2,7 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
-import MyAccount from '@/components/MyAccount'
+import UpdateEmail from '@/components/UpdateEmail'
+import UpdatePassword from '@/components/UpdatePassword'
+import DeleteAccount from '@/components/DeleteAccount'
 import Notes from '@/components/Notes'
 import AddNote from '@/components/AddNote'
 import EditNote from '@/components/EditNote'
@@ -22,9 +24,19 @@ export default new Router({
       component: Login
     },
     {
-      path: '/myaccount',
-      name: 'MyAccount',
-      component: MyAccount
+      path: '/updateemail',
+      name: 'UpdateEmail',
+      component: UpdateEmail
+    },
+    {
+      path: '/updatepassword',
+      name: 'UpdatePassword',
+      component: UpdatePassword
+    },
+    {
+      path: '/deleteaccount',
+      name: 'DeleteAccount',
+      component: DeleteAccount
     },
     {
       path: '/notes',
