@@ -1,6 +1,6 @@
 <template>
   <span>
-        <v-navigation-drawer app v-model="drawer" class="brown lighten-2" dark disable-resize-watcher>
+        <v-navigation-drawer app v-model="drawer" class="primary lighten-2" dark disable-resize-watcher>
             <v-list>
                 <template>
                   <div v-if="signedIn">
@@ -16,11 +16,24 @@
                           </v-list-tile-content>
                       </v-list-tile>
                     <v-divider></v-divider>
-                    <v-list-tile to="/MyAccount">
-                          <v-list-tile-content>
-                              MY ACCOUNT
-                          </v-list-tile-content>
-                      </v-list-tile>
+                    <v-menu offset-x right open-on-hover>
+                      <template v-slot:activator="{ on }">
+                          <v-list-tile to="/MyAccount" v-on="on">
+                            <v-list-tile-content>
+                                MY ACCOUNT
+                            </v-list-tile-content>
+                        </v-list-tile>
+                      </template>
+                      <v-list>
+                        <v-list-tile
+                          v-for="(item, index) in items"
+                          :key="index"
+                          :to="item.dest"
+                        >
+                          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
                     <v-divider></v-divider>
                   </div>
                   <div v-else>
@@ -40,7 +53,7 @@
                 </template>
             </v-list>
         </v-navigation-drawer>
-        <v-toolbar app color="brown darken-4" dark>
+        <v-toolbar app color="primary darken-4" dark>
             <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
             <v-spacer class="hidden-md-and-up"></v-spacer>
             <v-toolbar-title>{{appTitle}}</v-toolbar-title>
@@ -48,7 +61,7 @@
             <v-spacer class="hidden-sm-and-down"></v-spacer>
             <v-btn class="hidden-sm-and-down" flat to="/Login" v-if="!signedIn">SIGN IN</v-btn>
             <v-btn class="hidden-sm-and-down" flat @click="logout" v-if="signedIn">SIGN OUT</v-btn>
-            <v-btn class="hidden-sm-and-down" color="brown lighten-3" to="/Register" v-if="!signedIn">SIGN UP</v-btn>
+            <v-btn class="hidden-sm-and-down" color="primary lighten-3" to="/Register" v-if="!signedIn">SIGN UP</v-btn>
             <v-menu offset-y open-on-hover v-if="signedIn">
               <template v-slot:activator="{ on }">
                 <v-btn class="hidden-sm-and-down" flat to="/MyAccount" v-on="on">MY ACCOUNT</v-btn>
