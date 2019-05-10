@@ -1,19 +1,21 @@
 <template>
   <div>
-    <v-container grid-list-lg fluid>
+    <v-container fluid fill-height>
       <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4 ma-3>
+        <v-flex xs12 sm8 md4>
           <v-card class="elevation-12">
-            <v-toolbar color="cyan" dark>
+            <v-toolbar dark color="primary">
               <v-toolbar-title>Delete Account</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
             </v-toolbar>
             <v-card-text>
               <p><v-icon color="yellow">warning</v-icon> Deleting your account will delete all of your notes.</p>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn flat color="cyan" @click="$router.go(-1)">Cancel</v-btn>
-              <v-btn flat color="cyan" @click="confirmDelete">Delete</v-btn>
+              <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
+              <v-btn flat color="primary darken-1" @click="confirmDelete">Delete</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -23,8 +25,8 @@
             <v-card-text>Please confirm that you want to delete your account.</v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" flat @click="dialog = false">Cancel</v-btn>
-              <v-btn color="green darken-1" flat @click="deleteAccount()">Delete</v-btn>
+              <v-btn color="primary darken-1" flat @click="dialog = false">Cancel</v-btn>
+              <v-btn color="primary darken-1" flat @click="deleteAccount()">Delete</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>

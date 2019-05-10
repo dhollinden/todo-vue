@@ -1,11 +1,13 @@
 <template>
   <div>
-    <v-container grid-list-lg fluid>
-      <v-layout row wrap justify-center>
-        <v-flex xs12 sm8 md4 ma-3>
+    <v-container fluid fill-height>
+      <v-layout align-center justify-center>
+        <v-flex xs12 sm8 md4>
           <v-card class="elevation-12">
-            <v-toolbar color="cyan" dark>
+            <v-toolbar dark color="primary">
               <v-toolbar-title>Update Email Address</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
             </v-toolbar>
             <v-card-text>
               <v-form ref="form">
@@ -24,8 +26,8 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn flat color="cyan" @click="$router.go(-1)">Cancel</v-btn>
-              <v-btn flat color="cyan" @click="onEmailUpdateSubmit">Update</v-btn>
+              <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
+              <v-btn flat color="primary darken-1" @click="onEmailUpdateSubmit">Update</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
