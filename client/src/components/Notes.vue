@@ -90,7 +90,9 @@ export default {
       notes: [],
       errors: [],
       dialog: false,
-      alert: false
+      alert: false,
+      deleteId: '',
+      deleteName: ''
     }
   },
   mounted () {
