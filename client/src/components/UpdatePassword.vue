@@ -10,10 +10,30 @@
           </v-toolbar>
           <v-card-text>
             <v-form ref="form">
-              <v-text-field label="Current Password" name="cur_password" id="cur_password" type="password" v-model.trim="password.cur_password">
-              </v-text-field>
-              <v-text-field label="New Password" name="new_password" id="new_password" type="password" v-model.trim="password.new_password">
-              </v-text-field>
+              <v-text-field
+                id="cur_password"
+                v-model.trim="password.cur_password"
+                :append-icon="show_cur ? 'visibility' : 'visibility_off'"
+                :rules="[rules.required, rules.min]"
+                :type="show_cur ? 'text' : 'password'"
+                name="cur_password"
+                label="Current Password"
+                hint="At least 8 characters"
+                counter
+                @click:append="show_cur = !show_cur"
+              ></v-text-field>
+              <v-text-field
+                id="new_password"
+                v-model.trim="password.new_password"
+                :append-icon="show_new ? 'visibility' : 'visibility_off'"
+                :rules="[rules.required, rules.min]"
+                :type="show_new ? 'text' : 'password'"
+                name="new_password"
+                label="New Password"
+                hint="At least 8 characters"
+                counter
+                @click:append="show_new = !show_new"
+              ></v-text-field>
             </v-form>
             <v-alert :value="alert.status" :type="alert.type" outline>
               <ul>
@@ -30,6 +50,16 @@
           </v-card-actions>
         </v-card>
       </v-flex>
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Password Updated</v-card-title>
+          <v-card-text>Your password was updated.</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary darken-1" flat to="/Notes">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
   </v-container>
 </template>
@@ -44,7 +74,14 @@ export default {
   data () {
     return {
       password: {},
-      passwordFieldType: 'password',
+      show_cur: false,
+      show_new: false,
+      dialog: false,
+      rules: {
+        required: value => !!value || 'Required.',
+        min: value => (typeof value === 'undefined' || value.length >= 8) || 'Min 8 characters',
+        emailMatch: () => ('The email and password you entered don\'t match')
+      },
       alert: {
         status: false,
         type: 'error',
@@ -68,15 +105,8 @@ export default {
       evt.preventDefault()
       const response = await MyAccountService.updatePassword(qs.stringify(this.password))
       if (response.data.success) {
-        this.password = {
-          cur_password: '',
-          new_password: ''
-        }
-        this.alert = {
-          status: true,
-          type: 'success',
-          messages: [{msg: 'Your password was updated'}]
-        }
+        this.alert.status = false
+        this.dialog = true
       } else {
         this.alert = {
           status: true,

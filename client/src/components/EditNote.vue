@@ -30,12 +30,14 @@
 </template>-->
 
 <template>
-  <v-container fill-height>
+  <v-container fluid fill-height>
     <v-layout align-center justify-center>
       <v-flex xs12 sm8 md4>
         <v-card class="elevation-12">
-          <v-toolbar color="cyan" dark>
+          <v-toolbar dark color="primary">
             <v-toolbar-title>Edit Note</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           <v-card-text>
             <v-form ref="form">
@@ -44,10 +46,18 @@
               <v-text-field label="Note" name="body" id="body" type="text" v-model.trim="note.body">
               </v-text-field>
             </v-form>
+            <v-alert :value="alert.status" :type="alert.type" outline>
+              <ul>
+                <li v-for="message of alert.messages" :key="message.id">
+                  {{message.msg}}
+                </li>
+              </ul>
+            </v-alert>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="cyan" @click="updateNote">Update</v-btn>
+            <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
+            <v-btn flat color="primary darken-1" @click="updateNote">Edit Note</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -64,7 +74,11 @@ export default {
   data () {
     return {
       note: {},
-      errors: {}
+      alert: {
+        status: false,
+        type: 'error',
+        messages: []
+      }
     }
   },
   mounted () {
@@ -72,23 +86,39 @@ export default {
   },
   methods: {
     async getNote () {
-      const response = await TodoService.getNote({
-        id: this.$route.params.id
-      })
-      if (response.data.isAuthenticated === false) {
-        this.$router.push({ name: 'Login' })
-      } else if (response.data.success) {
-        this.note = response.data.note
+      const response = await TodoService.getNote({ id: this.$route.params.id })
+      if (!response.data.err) {
+        if (response.data.success) {
+          this.note = response.data.note
+        } else if (response.data.isAuthenticated === false) {
+          this.$router.push({ name: 'Login' })
+        }
       } else {
-        this.errors = response.data.err
+        this.alert = {
+          status: true,
+          type: 'error',
+          messages: response.data.err
+        }
       }
     },
     async updateNote () {
-      const response = await TodoService.updateNote(qs.stringify(this.note))
-      if (response.data.success) {
-        this.$router.push({ name: 'Notes' })
-      } else {
-        this.errors = response.data.err
+      try {
+        const response = await TodoService.updateNote(qs.stringify(this.note))
+        if (response.data.success) {
+          this.$router.push({ name: 'Notes' })
+        } else {
+          this.alert = {
+            status: true,
+            type: 'error',
+            messages: response.data.err
+          }
+        }
+      } catch (error) {
+        this.alert = {
+          status: true,
+          type: 'error',
+          messages: [{msg: error}]
+        }
       }
     }
   }

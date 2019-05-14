@@ -53,7 +53,7 @@
                 </template>
             </v-list>
         </v-navigation-drawer>
-        <v-toolbar app color="primary darken-4" dark>
+        <v-toolbar app color="primary darken-2" dark>
             <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
             <v-spacer class="hidden-md-and-up"></v-spacer>
             <v-toolbar-title>{{appTitle}}</v-toolbar-title>
