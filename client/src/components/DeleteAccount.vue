@@ -9,7 +9,7 @@
             <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           <v-card-text>
-            <p><v-icon color="yellow">warning</v-icon> Deleting your account will delete all of your notes.</p>
+            <p><v-icon color="red">warning</v-icon> Deleting your account will delete all of your notes.</p>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -24,7 +24,7 @@
           <v-card-text>Please confirm that you want to delete your account.</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary darken-1" flat @click="dialog = false">Cancel</v-btn>
+            <v-btn color="primary darken-1" flat to="/Notes">Cancel</v-btn>
             <v-btn color="primary darken-1" flat @click="deleteAccount()">Delete</v-btn>
           </v-card-actions>
         </v-card>
