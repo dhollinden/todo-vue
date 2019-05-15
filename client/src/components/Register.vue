@@ -1,75 +1,63 @@
-<!--<template>
-  <b-row class="justify-content-md-center">
-    <b-col cols="6">
-      <h2>Please Register</h2>
-      <div v-if="errors && errors.length">
-        <div v-for="error of errors" :key="error.id">
-          <b-alert show>{{error.msg}}</b-alert>
-        </div>
-      </div>
-      <b-form @submit="onSubmit">
-        <b-form-group id="fieldsetHorizontal"
-                      horizontal
-                      :label-cols="4"
-                      breakpoint="md"
-                      label="Enter Email Address">
-          <b-form-input id="email" v-model.trim="register.email"></b-form-input>
-        </b-form-group>
-        <b-form-group id="fieldsetHorizontal2"
-                      horizontal
-                      :label-cols="4"
-                      breakpoint="md"
-                      label="Enter Password">
-          <b-form-input :type='passwordFieldType' id="password" v-model.trim="register.password"></b-form-input>
-        </b-form-group>
-        <b-button type="button" @click="switchVisibility">show / hide</b-button>
-        <b-button type="submit" variant="primary">Register</b-button>
-        <b-button type="button" variant="success" @click="$router.go(-1)">Cancel</b-button>
-      </b-form>
-    </b-col>
-  </b-row>
-</template>-->
-
 <template>
-  <div>
-    <v-container>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
-          <v-alert :value="alert" color="error" icon="warning" outline>
-            <ul>
-              <li v-for="error of errors" :key="error.id">
-                {{error.msg}}
-              </li>
-            </ul>
-          </v-alert>
-        </v-flex>
-      </v-layout>
-    </v-container>
-    <v-container fill-height>
-      <v-layout align-center justify-center>
-        <v-flex xs12 sm8 md4>
-          <v-card class="elevation-12">
-            <v-toolbar color="cyan" dark>
-              <v-toolbar-title>Sign Up</v-toolbar-title>
-            </v-toolbar>
-            <v-card-text>
-              <v-form ref="form">
-                <v-text-field label="Enter Email Address" name="email" id="email" type="text" v-model.trim="register.email">
-                </v-text-field>
-                <v-text-field label="Enter Password" name="password" id="password" type="password" v-model.trim="register.password">
-                </v-text-field>
-              </v-form>
-            </v-card-text>
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <v-flex xs12 sm8 md4>
+        <v-card class="elevation-12">
+          <v-toolbar dark color="primary">
+            <v-toolbar-title>Sign Up</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <v-form ref="form">
+              <v-text-field
+                v-model.trim="register.email"
+                type="text"
+                name="email"
+                label="Enter Email Address"
+                :rules="emailRules"
+              ></v-text-field>
+              <v-text-field
+                id="new_password"
+                v-model.trim="register.password"
+                :append-icon="show ? 'visibility' : 'visibility_off'"
+                :rules="[passwordRules.required, passwordRules.min]"
+                :type="show ? 'text' : 'password'"
+                name="password"
+                label="Enter Password"
+                hint="At least 8 characters"
+                counter
+                @click:append="show = !show"
+              ></v-text-field>
+            </v-form>
+            <v-alert :value="alert.status" :type="alert.type" outline>
+              <ul>
+                <li v-for="message of alert.messages" :key="message.id">
+                  {{message.msg}}
+                </li>
+              </ul>
+            </v-alert>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn flat color="primary darken-1" to="/Login">Already have an account?</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
+            <v-btn flat color="primary darken-1" @click="onSubmit">Sign Up</v-btn>
+          </v-card-actions>
+        </v-card>
+        <v-dialog v-model="dialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">Account Created</v-card-title>
+            <v-card-text>Please sign in to start creating notes.</v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn flat color="cyan" @click="$router.go(-1)">Cancel</v-btn>
-              <v-btn flat color="cyan" @click="onSubmit">Sign Up</v-btn>
+              <v-btn color="primary darken-1" flat to="/Login">Sign In</v-btn>
             </v-card-actions>
           </v-card>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </div>
+        </v-dialog>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -82,9 +70,25 @@ export default {
   data () {
     return {
       register: {},
-      errors: [],
-      alert: false,
-      passwordFieldType: 'password'
+      dialog: false,
+      show: false,
+      passwordRules: {
+        required: value => !!value || 'Required.',
+        min: value => (typeof value === 'undefined' || value.length >= 8) || 'Min 8 characters'
+      },
+      emailRules: [value => {
+        if (typeof value === 'undefined') {
+          return true
+        } else if (value.length > 0) {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        }
+      }],
+      alert: {
+        status: false,
+        type: 'error',
+        messages: []
+      }
     }
   },
   methods: {
@@ -92,14 +96,15 @@ export default {
       evt.preventDefault()
       const response = await AuthService.register(qs.stringify(this.register))
       if (response.data.success) {
-        this.$router.push({ name: 'Login' })
+        this.alert.status = false
+        this.dialog = true
       } else {
-        this.errors = response.data.err
-        this.alert = true
+        this.alert = {
+          status: true,
+          type: 'error',
+          messages: response.data.err
+        }
       }
-    },
-    switchVisibility () {
-      this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password'
     }
   }
 }
