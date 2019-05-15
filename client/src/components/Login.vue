@@ -36,7 +36,7 @@
           <v-card-actions>
             <v-btn flat color="primary darken-1" to="/Register">Need to create an account?</v-btn>
             <v-spacer></v-spacer>
-            <v-btn flat color="primary darken-1" to="/Home">Cancel</v-btn>
+            <v-btn flat color="primary darken-1" to="/">Cancel</v-btn>
             <v-btn flat color="primary darken-1" @click="onSubmit">Sign In</v-btn>
           </v-card-actions>
         </v-card>

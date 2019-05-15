@@ -112,7 +112,7 @@ export default {
       if (response.data.success) {
         this.signedIn = false
         this.drawer = false
-        this.$router.push({ name: 'Login' })
+        this.$router.push({ name: 'Home' })
       } else {
         this.errors = response.data.err
       }

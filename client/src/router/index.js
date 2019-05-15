@@ -8,6 +8,7 @@ import DeleteAccount from '@/components/DeleteAccount'
 import Notes from '@/components/Notes'
 import AddNote from '@/components/AddNote'
 import EditNote from '@/components/EditNote'
+import Home from '@/components/Home'
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/editnote/:id',
       name: 'EditNote',
       component: EditNote
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
     },
     {
       path: '*',
