@@ -10,10 +10,19 @@
           </v-toolbar>
           <v-card-text>
             <v-form ref="form">
-              <v-text-field label="Current Email Address" name="cur_email" id="cur_email" type="text" v-model.trim="email.cur_email">
-              </v-text-field>
-              <v-text-field label="New Email Address" name="new_email" id="new_email" type="text" v-model.trim="email.new_email" background-color>
-              </v-text-field>
+              <v-text-field
+                v-model.trim="email.cur_email"
+                type="text"
+                name="cur_email"
+                label="Current Email Address"
+              ></v-text-field>
+              <v-text-field
+                v-model.trim="email.new_email"
+                type="text"
+                name="new_email"
+                label="New Email Address"
+                :rules="emailRules"
+              ></v-text-field>
             </v-form>
             <v-alert :value="alert.status" :type="alert.type" outline>
               <ul>
@@ -29,6 +38,16 @@
             <v-btn flat color="primary darken-1" @click="onEmailUpdateSubmit">Update</v-btn>
           </v-card-actions>
         </v-card>
+        <v-dialog v-model="dialog" persistent max-width="290">
+          <v-card>
+            <v-card-title class="headline">Email Updated</v-card-title>
+            <v-card-text>Your email address was updated.</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary darken-1" flat to="/Notes">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-flex>
     </v-layout>
   </v-container>
@@ -46,11 +65,20 @@ export default {
       email: {
         cur_email: ''
       },
+      dialog: false,
       alert: {
         status: false,
         type: 'error',
         messages: []
-      }
+      },
+      emailRules: [value => {
+        if (typeof value === 'undefined') {
+          return true
+        } else if (value.length > 0) {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        }
+      }]
     }
   },
   mounted () {
@@ -73,15 +101,8 @@ export default {
       evt.preventDefault()
       const response = await MyAccountService.updateEmail(qs.stringify(this.email))
       if (response.data.success) {
-        this.email = {
-          cur_email: response.data.new_email,
-          new_email: ''
-        }
-        this.alert = {
-          status: true,
-          type: 'success',
-          messages: [{msg: 'Your email address was updated'}]
-        }
+        this.alert.status = false
+        this.dialog = true
       } else {
         this.alert = {
           status: true,
