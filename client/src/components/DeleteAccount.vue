@@ -36,6 +36,7 @@
 <script>
 
 import MyAccountService from '@/services/MyAccountService'
+import { eventBus } from '@/main'
 
 export default {
   name: 'MyAccount',
@@ -63,6 +64,7 @@ export default {
       this.dialog = false
       const response = await MyAccountService.deleteAccount()
       if (response.data.success) {
+        eventBus.$emit('signedIn', false)
         this.$router.push({ name: 'Home' })
       } else {
         this.deleteMessages = response.data.err
