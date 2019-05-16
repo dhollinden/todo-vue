@@ -24,7 +24,6 @@
     <v-layout row wrap>
       <v-flex xs12 sm12 md6 v-for="(note, index) in notes" :key="index">
           <v-toolbar color="primary" dark>
-            <v-toolbar-side-icon></v-toolbar-side-icon>
             <v-toolbar-title>{{ note.name }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <!-- for displaying only unchecked/checked items (for future use)
@@ -36,7 +35,7 @@
           </v-toolbar>
 
           <v-list>
-            <!-- the template could be <template v-for="(item, index) in items"> when there are multiple todos per list -->
+            <!-- <template v-for="(item, index) in items"> when there are multiple todos per list -->
             <template>
               <v-list-tile>
                 <!-- for initial checkbox (for future use)
@@ -66,7 +65,7 @@
       <v-dialog v-model="dialog" persistent max-width="290">
         <v-card>
           <v-card-title class="headline">Delete this note?</v-card-title>
-          <v-card-text>Delete "{{ this.deleteName }}"? </v-card-text>
+          <v-card-text>"{{ this.deleteName }}"</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary darken-1" flat @click="dialog = false">Cancel</v-btn>

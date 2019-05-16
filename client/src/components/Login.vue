@@ -6,7 +6,7 @@
           <v-toolbar dark color="primary">
             <v-toolbar-title>Sign In</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
+            <v-btn icon to="/"><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           <v-card-text>
             <v-form ref="form">
