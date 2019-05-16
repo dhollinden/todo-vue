@@ -14,14 +14,16 @@
 
 <script>
 
-  import TodoService from '@/services/TodoService'
-  import qs from 'querystring'
+/*
+import TodoService from '@/services/TodoService'
+import qs from 'querystring'
+*/
 
-  export default {
-    name: 'Notes',
-    data () {
-      return {
-      }
+export default {
+  name: 'Notes',
+  data () {
+    return {
     }
   }
+}
 </script>
