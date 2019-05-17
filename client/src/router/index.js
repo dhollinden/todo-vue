@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Register from '@/components/Register'
-import Login from '@/components/Login'
-import UpdateEmail from '@/components/UpdateEmail'
-import UpdatePassword from '@/components/UpdatePassword'
-import DeleteAccount from '@/components/DeleteAccount'
-import Notes from '@/components/Notes'
-import AddNote from '@/components/AddNote'
-import EditNote from '@/components/EditNote'
-import Home from '@/components/Home'
+import Register from '@/views/Register'
+import Login from '@/views/Login'
+import UpdateEmail from '@/views/UpdateEmail'
+import UpdatePassword from '@/views/UpdatePassword'
+import DeleteAccount from '@/views/DeleteAccount'
+import Notes from '@/views/Notes'
+import AddNote from '@/views/AddNote'
+import EditNote from '@/views/EditNote'
+import Home from '@/views/Home'
 
 Vue.use(Router)
 
