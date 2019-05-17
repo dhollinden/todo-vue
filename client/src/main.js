@@ -5,10 +5,8 @@ import Vue from 'vue'
 import './plugins/vuetify'
 import App from './App'
 import router from './router'
-import VueSweetalert2 from 'vue-sweetalert2'
 import NavBar from './components/NavBar'
 
-Vue.use(VueSweetalert2)
 Vue.config.productionTip = false
 Vue.component('NavBar', NavBar)
 
