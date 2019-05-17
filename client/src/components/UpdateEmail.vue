@@ -35,7 +35,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
-            <v-btn flat color="primary darken-1" @click="onEmailUpdateSubmit">Update</v-btn>
+            <v-btn flat color="primary darken-1" @click="updateEmail">Update</v-btn>
           </v-card-actions>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="290">
@@ -97,7 +97,7 @@ export default {
         this.errors = response.data.err
       }
     },
-    async onEmailUpdateSubmit (evt) {
+    async updateEmail (evt) {
       evt.preventDefault()
       const response = await MyAccountService.updateEmail(qs.stringify(this.email))
       if (response.data.success) {

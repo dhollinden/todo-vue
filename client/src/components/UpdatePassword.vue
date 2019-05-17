@@ -46,7 +46,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
-            <v-btn flat color="primary darken-1" @click="onPasswordUpdateSubmit">Update</v-btn>
+            <v-btn flat color="primary darken-1" @click="updatePassword">Update</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -101,7 +101,7 @@ export default {
         this.errors = response.data.err
       }
     },
-    async onPasswordUpdateSubmit (evt) {
+    async updatePassword (evt) {
       evt.preventDefault()
       const response = await MyAccountService.updatePassword(qs.stringify(this.password))
       if (response.data.success) {

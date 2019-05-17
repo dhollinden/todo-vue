@@ -1,34 +1,3 @@
-<!--<template>
-  <b-row class="justify-content-md-center">
-    <b-col cols="6">
-      <NavBar />
-      <h2>Edit Note</h2>
-      <div v-if="errors && errors.length">
-        <div v-for="error of errors" :key="error.id">
-          <b-alert show>{{error.msg}}</b-alert>
-        </div>
-      </div>
-      <b-form @submit="updateNote">
-        <b-form-group id="fieldsetHorizontal"
-                      horizontal
-                      :label-cols="4"
-                      breakpoint="md"
-                      label="Note Name">
-          <b-form-input id="name" v-model.trim="note.name"></b-form-input>
-        </b-form-group>
-        <b-form-group id="fieldsetHorizontal2"
-                      horizontal
-                      :label-cols="4"
-                      breakpoint="md"
-                      label="Note">
-          <b-form-input id="body" v-model.trim="note.body"></b-form-input>
-        </b-form-group>
-        <b-button type="submit" variant="primary">Update</b-button>
-      </b-form>
-    </b-col>
-  </b-row>
-</template>-->
-
 <template>
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
@@ -57,7 +26,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
-            <v-btn flat color="primary darken-1" @click="updateNote">Edit Note</v-btn>
+            <v-btn flat color="primary darken-1" @click="editNote">Edit Note</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -101,7 +70,7 @@ export default {
         }
       }
     },
-    async updateNote () {
+    async editNote () {
       try {
         const response = await TodoService.updateNote(qs.stringify(this.note))
         if (response.data.success) {
