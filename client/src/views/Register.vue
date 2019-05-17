@@ -15,7 +15,7 @@
                 type="text"
                 name="email"
                 label="Enter Email Address"
-                :rules="emailRules"
+                :rules="[emailRules.valid]"
               ></v-text-field>
               <v-text-field
                 id="new_password"
@@ -69,21 +69,25 @@ export default {
   name: 'Register',
   data () {
     return {
-      register: {},
+      register: {
+        email: '',
+        password: ''
+      },
       dialog: false,
       show: false,
       passwordRules: {
         required: value => !!value || 'Required.',
-        min: value => (typeof value === 'undefined' || value.length >= 8) || 'Min 8 characters'
+        min: value => value.length >= 8 || 'Min 8 characters'
       },
-      emailRules: [value => {
-        if (typeof value === 'undefined') {
+      emailRules: {
+        valid: value => {
+          if (value.length > 0) {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return pattern.test(value) || 'Invalid e-mail.'
+          }
           return true
-        } else if (value.length > 0) {
-          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          return pattern.test(value) || 'Invalid e-mail.'
         }
-      }],
+      },
       alert: {
         status: false,
         type: 'error',

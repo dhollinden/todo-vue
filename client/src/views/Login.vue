@@ -55,7 +55,10 @@ export default {
   name: 'Login',
   data () {
     return {
-      login: {},
+      login: {
+        email: '',
+        password: ''
+      },
       show: false,
       alert: {
         status: false,
