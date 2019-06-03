@@ -48,7 +48,7 @@ app.use(compression()); //Compress all routes
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cors({credentials: true, origin: 'http://localhost:8080'}));
+app.use(cors({credentials: true, origin: 'https://d3th56k2khmd9a.cloudfront.net'}));
 
 // clarify need for these
 // app.use(express.json());

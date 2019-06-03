@@ -11,7 +11,7 @@
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "deploy": "aws s3 sync ./dist s3://your-bucket-name --profile todo-vue",
+    "deploy": "aws s3 sync ./dist s3://todo-vue-client --profile todo-vue",
     "unit": "jest --config test/unit/jest.conf.js --coverage"
   },
   "dependencies": {
