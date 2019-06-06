@@ -100,7 +100,8 @@ export default {
   methods: {
     async fetchNotes () {
       const response = await TodoService.fetchNotes()
-      if (response.data.isAuthenticated === false) {
+      console.log('Notes view: fetchNotes function: response.data.isAuthenticated = ', response.data.isAuthenticated)
+      if (typeof response.data.isAuthenticated !== 'undefined' && response.data.isAuthenticated === false) {
         this.$router.push({ name: 'Login' })
       } else if (response.data.success) {
         this.notes = response.data.notes
