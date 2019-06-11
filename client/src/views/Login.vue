@@ -36,10 +36,14 @@
           <v-card-actions>
             <v-container fluid ma-0 pa-0>
               <v-layout row wrap>
-                  <v-btn flat color="primary darken-1" to="/Register">Need to Sign Up?</v-btn>
-                  <v-spacer></v-spacer>
-                  <v-btn flat color="primary darken-1" to="/">Cancel</v-btn>
-                  <v-btn flat color="primary darken-1" @click="onSubmit">Sign In</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary darken-1" to="/">Cancel</v-btn>
+                <v-btn flat color="primary darken-1" @click="onSubmit">Sign In</v-btn>
+              </v-layout>
+              <v-layout row wrap>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary darken-1" to="/Register">Need to Sign Up?</v-btn>
+                <v-spacer></v-spacer>
               </v-layout>
             </v-container>
           </v-card-actions>
