@@ -1,8 +1,12 @@
 <template>
   <v-container grid-list-lg>
     <v-layout>
-      <v-spacer></v-spacer>
-      <v-btn color="primary darken-1" flat to="/AddNote" dark>ADD Note</v-btn>
+      <template v-if="notesLoaded">
+        <v-spacer></v-spacer>
+        <v-btn v-if="notes.length == 0" color="primary darken-1" flat to="/AddNote" dark>Click here to add a note</v-btn>
+        <v-btn v-if="notes.length > 0" color="primary darken-1" flat to="/AddNote" dark>ADD NOTE</v-btn>
+        <v-spacer v-if="notes.length == 0"></v-spacer>
+      </template>
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12 sm12 md12>
@@ -90,6 +94,7 @@ export default {
       errors: [],
       dialog: false,
       alert: false,
+      notesLoaded: false,
       deleteId: '',
       deleteName: ''
     }
@@ -105,6 +110,7 @@ export default {
         this.$router.push({ name: 'Login' })
       } else if (response.data.success) {
         this.notes = response.data.notes
+        this.notesLoaded = true
       } else {
         this.errors = response.data.err
         this.alert = true
