@@ -39,10 +39,14 @@
             </v-alert>
           </v-card-text>
           <v-card-actions>
-            <v-btn flat color="primary darken-1" to="/Login">Already have an account?</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn flat color="primary darken-1" to="/">Cancel</v-btn>
-            <v-btn flat color="primary darken-1" @click="onSubmit">Sign Up</v-btn>
+            <v-container fluid ma-0 pa-0>
+              <v-layout row wrap>
+                <v-btn flat color="primary darken-1" to="/Login">Already signed up?</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary darken-1" to="/">Cancel</v-btn>
+                <v-btn flat color="primary darken-1" @click="onSubmit">Sign Up</v-btn>
+              </v-layout>
+            </v-container>
           </v-card-actions>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="290">
