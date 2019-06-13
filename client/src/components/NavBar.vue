@@ -51,8 +51,9 @@
         </v-navigation-drawer>
         <v-toolbar app color="primary darken-2" dark>
             <v-toolbar-side-icon class="hidden-md-and-up" @click="drawer = !drawer"></v-toolbar-side-icon>
-            <v-spacer class="hidden-md-and-up"></v-spacer>
             <v-toolbar-title>{{appTitle}}</v-toolbar-title>
+            <v-spacer class="hidden-md-and-up"></v-spacer>
+            <v-btn class="hidden-md-and-up" flat to="/AddNote" dark>ADD NOTE</v-btn>
             <v-btn class="hidden-sm-and-down" v-if="signedIn" to="/Notes" flat>Notes</v-btn>
             <v-spacer class="hidden-sm-and-down"></v-spacer>
             <v-btn class="hidden-sm-and-down" v-if="!signedIn" to="/Login" flat>SIGN IN</v-btn>

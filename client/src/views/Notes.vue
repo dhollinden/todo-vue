@@ -1,6 +1,6 @@
 <template>
-  <v-container grid-list-lg>
-    <v-layout>
+  <v-container fluid grid-list-lg>
+    <v-layout class="hidden-sm-and-down">
       <template v-if="notesLoaded">
         <v-spacer></v-spacer>
         <v-btn v-if="notes.length == 0" color="primary darken-1" flat to="/AddNote" dark>Click here to add a note</v-btn>
