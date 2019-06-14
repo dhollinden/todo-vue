@@ -1,5 +1,6 @@
 <template>
-  <v-container fluid grid-list-lg>
+  <div>
+  <!--<v-container fluid grid-list-lg>-->
     <v-layout class="hidden-sm-and-down">
       <template v-if="notesLoaded">
         <v-spacer></v-spacer>
@@ -78,7 +79,8 @@
         </v-card>
       </v-dialog>
     </v-layout>
-  </v-container>
+  <!--</v-container>-->
+  </div>
 </template>
 
 <script>
