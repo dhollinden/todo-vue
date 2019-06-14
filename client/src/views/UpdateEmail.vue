@@ -1,56 +1,54 @@
 <template>
-  <v-container fluid fill-height>
-    <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md4>
-        <v-card class="elevation-12">
-          <v-toolbar dark color="primary">
-            <v-toolbar-title>Update Email Address</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
-          </v-toolbar>
-          <v-card-text>
-            <v-form ref="form">
-              <v-text-field
-                v-model.trim="email.cur_email"
-                type="text"
-                name="cur_email"
-                label="Current Email Address"
-              ></v-text-field>
-              <v-text-field
-                v-model.trim="email.new_email"
-                type="text"
-                name="new_email"
-                label="New Email Address"
-                :rules="emailRules"
-              ></v-text-field>
-            </v-form>
-            <v-alert :value="alert.status" :type="alert.type" outline>
-              <ul>
-                <li v-for="message of alert.messages" :key="message.id">
-                  {{message.msg}}
-                </li>
-              </ul>
-            </v-alert>
-          </v-card-text>
+  <v-layout align-center justify-center>
+    <v-flex xs12 sm8 md4>
+      <v-card class="elevation-12">
+        <v-toolbar dark color="primary">
+          <v-toolbar-title>Update Email Address</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon to="/Notes"><v-icon>close</v-icon></v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <v-form ref="form">
+            <v-text-field
+              v-model.trim="email.cur_email"
+              type="text"
+              name="cur_email"
+              label="Current Email Address"
+            ></v-text-field>
+            <v-text-field
+              v-model.trim="email.new_email"
+              type="text"
+              name="new_email"
+              label="New Email Address"
+              :rules="emailRules"
+            ></v-text-field>
+          </v-form>
+          <v-alert :value="alert.status" :type="alert.type" outline>
+            <ul>
+              <li v-for="message of alert.messages" :key="message.id">
+                {{message.msg}}
+              </li>
+            </ul>
+          </v-alert>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
+          <v-btn flat color="primary darken-1" @click="updateEmail">Update</v-btn>
+        </v-card-actions>
+      </v-card>
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Email Updated</v-card-title>
+          <v-card-text>Your email address was updated.</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn flat color="primary darken-1" to="/Notes">Cancel</v-btn>
-            <v-btn flat color="primary darken-1" @click="updateEmail">Update</v-btn>
+            <v-btn color="primary darken-1" flat to="/Notes">Close</v-btn>
           </v-card-actions>
         </v-card>
-        <v-dialog v-model="dialog" persistent max-width="290">
-          <v-card>
-            <v-card-title class="headline">Email Updated</v-card-title>
-            <v-card-text>Your email address was updated.</v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary darken-1" flat to="/Notes">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-flex>
-    </v-layout>
-  </v-container>
+      </v-dialog>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
