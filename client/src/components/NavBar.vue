@@ -4,25 +4,13 @@
             <v-list>
                 <template>
                   <div v-if="signedIn">
-                    <v-list-tile to="/Notes">
-                          <v-list-tile-content>
-                              NOTES
-                          </v-list-tile-content>
-                      </v-list-tile>
+                    <v-btn flat to="/notes">NOTES</v-btn>
                     <v-divider></v-divider>
-                    <v-list-tile v-on:click="logout">
-                          <v-list-tile-content>
-                              SIGN OUT
-                          </v-list-tile-content>
-                      </v-list-tile>
+                    <v-btn flat v-on:click="logout">SIGN OUT</v-btn>
                     <v-divider></v-divider>
-                    <v-menu offset-x right open-on-hover>
+                    <v-menu open-on-hover offset-x right>
                       <template v-slot:activator="{ on }">
-                          <v-list-tile v-on:click="" v-on="on">
-                            <v-list-tile-content>
-                                MY ACCOUNT
-                            </v-list-tile-content>
-                        </v-list-tile>
+                        <v-btn v-on="on" flat>MY ACCOUNT</v-btn>
                       </template>
                       <v-list>
                         <v-list-tile v-for="(item, index) in items" :key="index" :to="item.dest">
