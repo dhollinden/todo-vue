@@ -63,6 +63,7 @@
 
 <script>
 
+import MyAccountService from '@/services/MyAccountService'
 import AuthService from '@/services/AuthService'
 import { eventBus } from '@/main'
 
@@ -77,7 +78,7 @@ export default {
         { title: 'Update Password', dest: '/UpdatePassword' },
         { title: 'Delete Account', dest: '/DeleteAccount' }
       ],
-      signedIn: true
+      signedIn: false
     }
   },
   created () {
@@ -87,7 +88,27 @@ export default {
       console.log('NavBar.vue: eventBus.$on: signedIn = ', this.signedIn)
     })
   },
+  mounted () {
+    this.checkAuth()
+  },
   methods: {
+    async checkAuth () {
+      // check whether user is logged in by attempting to retrieve email address
+      const response = await MyAccountService.getEmail()
+      if (!response.data.err) {
+        console.log('In NavBar: response.data.email = ', response.data.email)
+        if (response.data.email) {
+          this.signedIn = true
+        }
+      } else {
+        this.alert = {
+          status: true,
+          type: 'error',
+          messages: response.data.err
+        }
+      }
+      console.log('In NavBar: signedIn = ', this.signedIn)
+    },
     async logout () {
       const response = await AuthService.logout()
       if (response.data.success) {
