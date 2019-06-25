@@ -70,8 +70,7 @@ export default {
         status: false,
         type: 'error',
         messages: []
-      },
-      signedIn: false
+      }
     }
   },
   methods: {
@@ -79,8 +78,7 @@ export default {
       evt.preventDefault()
       const response = await AuthService.login(qs.stringify(this.login))
       if (response.data.success) {
-        this.signedIn = true
-        eventBus.$emit('signedIn', this.signedIn)
+        eventBus.$emit('signedIn', true)
         this.$router.push({ name: 'Notes' })
       } else {
         this.alert = {

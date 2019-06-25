@@ -63,7 +63,6 @@
 
 <script>
 
-import MyAccountService from '@/services/MyAccountService'
 import AuthService from '@/services/AuthService'
 import { eventBus } from '@/main'
 
@@ -88,34 +87,11 @@ export default {
       console.log('NavBar: eventBus.$on: signedIn = ', this.signedIn)
     })
   },
-  /*
-  mounted () {
-    this.checkAuth()
-  },
-  */
   methods: {
-    async checkAuth () {
-      // check whether user is logged in by attempting to retrieve email address
-      const response = await MyAccountService.getEmail()
-      if (!response.data.err) {
-        console.log('NavBar: checkAuth(): response.data.email = ', response.data.email)
-        if (response.data.email) {
-          this.signedIn = true
-          eventBus.$emit('signedIn', this.signedIn)
-        }
-      } else {
-        this.alert = {
-          status: true,
-          type: 'error',
-          messages: response.data.err
-        }
-      }
-      console.log('NavBar: leaving checkAuth function: signedIn = ', this.signedIn)
-    },
     async logout () {
       const response = await AuthService.logout()
       if (response.data.success) {
-        this.signedIn = false
+        eventBus.$emit('signedIn', false)
         this.drawer = false
         this.$router.push({ name: 'Home' })
       } else {
