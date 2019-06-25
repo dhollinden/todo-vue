@@ -85,20 +85,23 @@ export default {
     // start listening to eventBus as soon as NavBar component is created
     eventBus.$on('signedIn', (signedIn) => {
       this.signedIn = signedIn
-      console.log('NavBar.vue: eventBus.$on: signedIn = ', this.signedIn)
+      console.log('NavBar: eventBus.$on: signedIn = ', this.signedIn)
     })
   },
+  /*
   mounted () {
     this.checkAuth()
   },
+  */
   methods: {
     async checkAuth () {
       // check whether user is logged in by attempting to retrieve email address
       const response = await MyAccountService.getEmail()
       if (!response.data.err) {
-        console.log('In NavBar: response.data.email = ', response.data.email)
+        console.log('NavBar: checkAuth(): response.data.email = ', response.data.email)
         if (response.data.email) {
           this.signedIn = true
+          eventBus.$emit('signedIn', this.signedIn)
         }
       } else {
         this.alert = {
@@ -107,7 +110,7 @@ export default {
           messages: response.data.err
         }
       }
-      console.log('In NavBar: signedIn = ', this.signedIn)
+      console.log('NavBar: leaving checkAuth function: signedIn = ', this.signedIn)
     },
     async logout () {
       const response = await AuthService.logout()
