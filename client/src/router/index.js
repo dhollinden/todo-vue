@@ -10,7 +10,6 @@ import AddNote from '@/views/AddNote'
 import EditNote from '@/views/EditNote'
 import Home from '@/views/Home'
 import MyAccountService from '@/services/MyAccountService'
-
 import { eventBus } from '@/main'
 
 Vue.use(Router)
@@ -98,13 +97,6 @@ let router = new Router({
   scrollBehavior () {
     return { x: 0, y: 0 }
   },
-  created () {
-    // start listening to eventBus as soon as component is created
-    eventBus.$on('signedIn', (signedIn) => {
-      router.options.signedIn = signedIn
-      console.log('router: created(): signedIn = ', router.options.signedIn)
-    })
-  },
   signedIn: false,
   methods: {
     async checkAuth () {
@@ -112,25 +104,14 @@ let router = new Router({
       const response = await MyAccountService.getEmail()
       if (!response.data.err) {
         console.log('router: checkAuth(): response.data.email = ', response.data.email)
-        if (response.data.email) {
-          router.options.signedIn = true
-          eventBus.$emit('signedIn', true)
-          console.log('router: leaving checkAuth function: router.options.signedIn = ', router.options.signedIn)
-          return true
-        } else {
-          router.options.signedIn = false
-          eventBus.$emit('signedIn', false)
-          console.log('router: leaving checkAuth function: router.options.signedIn = ', router.options.signedIn)
-          return false
-        }
+        router.options.signedIn = response.data.email !== undefined
+        console.log('router: leaving checkAuth function: router.options.signedIn = ', router.options.signedIn)
+        eventBus.$emit('signedIn', router.options.signedIn)
+        return router.options.signedIn
       } else {
-        /*
-        this.alert = {
-          status: true,
-          type: 'error',
-          messages: response.data.err
-        }
-        */
+        //
+        // handle errors encountered during checkAuth
+        //
       }
     }
   }
@@ -139,13 +120,13 @@ let router = new Router({
 router.beforeEach((to, from, next) => {
   console.log('router: beforeEach: begin');
   (async function () {
-    const signedIn2 = await router.options.methods.checkAuth()
-    console.log('router: beforeEach: signedIn2 = ', signedIn2)
+    const authenticated = await router.options.methods.checkAuth()
+    console.log('router: beforeEach: authenticated = ', authenticated)
     if (to.matched.some(record => record.meta.requiresAuth)) {
       // this route requires auth, so check if logged in
       // if not, redirect to login page
       console.log('router: beforeEach: meta: requiresAuth')
-      if (!signedIn2) {
+      if (!authenticated) {
         console.log('router: beforeEach: meta: requiresAuth: redirecting to login page')
         next({
           path: '/login',
@@ -159,7 +140,7 @@ router.beforeEach((to, from, next) => {
       // this route requires 'guest' status (not logged in), so check if logged in
       // if logged in, redirect to notes page
       console.log('router: beforeEach: meta: guest')
-      if (signedIn2) {
+      if (authenticated) {
         console.log('router: beforeEach: meta: guest: redirecting to Notes')
         next({name: 'Notes'})
       } else {
