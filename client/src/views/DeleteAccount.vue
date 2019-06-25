@@ -43,18 +43,7 @@ export default {
       dialog: false
     }
   },
-  mounted () {
-    this.getCurrentEmail()
-  },
   methods: {
-    async getCurrentEmail () {
-      const response = await MyAccountService.getEmail()
-      if (response.data.isAuthenticated === false) {
-        this.$router.push({ name: 'Login' })
-      } else {
-        this.errors = response.data.err
-      }
-    },
     confirmDelete () {
       this.dialog = true
     },

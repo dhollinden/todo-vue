@@ -87,18 +87,7 @@ export default {
       }
     }
   },
-  mounted () {
-    this.getCurrentEmail()
-  },
   methods: {
-    async getCurrentEmail () {
-      const response = await MyAccountService.getEmail()
-      if (response.data.isAuthenticated === false) {
-        this.$router.push({ name: 'Login' })
-      } else {
-        this.errors = response.data.err
-      }
-    },
     async updatePassword (evt) {
       evt.preventDefault()
       const response = await MyAccountService.updatePassword(qs.stringify(this.password))

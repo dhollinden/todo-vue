@@ -35,7 +35,6 @@
 <script>
 
 import TodoService from '@/services/TodoService'
-import MyAccountService from '@/services/MyAccountService'
 import qs from 'querystring'
 
 export default {
@@ -50,25 +49,7 @@ export default {
       }
     }
   },
-  mounted () {
-    this.checkAuth()
-  },
   methods: {
-    async checkAuth () {
-      // check whether user is logged in by attempting to retrieve his/her email address
-      const response = await MyAccountService.getEmail()
-      if (!response.data.err) {
-        if (!response.data.email) {
-          this.$router.push({ name: 'Login' })
-        }
-      } else {
-        this.alert = {
-          status: true,
-          type: 'error',
-          messages: response.data.err
-        }
-      }
-    },
     async addNote () {
       try {
         const response = await TodoService.addNote(qs.stringify(this.note))

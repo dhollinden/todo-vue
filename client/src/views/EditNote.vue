@@ -55,11 +55,7 @@ export default {
     async getNote () {
       const response = await TodoService.getNote({ id: this.$route.params.id })
       if (!response.data.err) {
-        if (response.data.success) {
-          this.note = response.data.note
-        } else if (response.data.isAuthenticated === false) {
-          this.$router.push({ name: 'Login' })
-        }
+        this.note = response.data.note
       } else {
         this.alert = {
           status: true,

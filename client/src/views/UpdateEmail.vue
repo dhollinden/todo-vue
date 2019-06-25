@@ -85,14 +85,16 @@ export default {
   methods: {
     async getCurrentEmail () {
       const response = await MyAccountService.getEmail()
-      if (response.data.isAuthenticated === false) {
-        this.$router.push({ name: 'Login' })
-      } else if (response.data.email) {
+      if (response.data.email) {
         this.email = {
           cur_email: response.data.email
         }
       } else {
-        this.errors = response.data.err
+        this.alert = {
+          status: true,
+          type: 'error',
+          messages: response.data.err
+        }
       }
     },
     async updateEmail (evt) {
