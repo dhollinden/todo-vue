@@ -104,7 +104,8 @@ exports.signup_post = [
     // validate email and password
 
     body('email', 'You must enter a valid email address.')
-        .isEmail(),
+        .isEmail()
+        .normalizeEmail(),
 
     body('password', 'Your password must be at least eight characters long.')
         .isLength({ min: 8 })
@@ -193,7 +194,8 @@ exports.login_post = [
     // Validate email. Require password, but do not validate min length of 8
 
     body('email', 'You must enter a valid email address.')
-        .isEmail(),
+        .isEmail()
+        .normalizeEmail(),
 
     body('password', 'You must enter a password.')
         .isLength({ min: 1 })
@@ -233,6 +235,7 @@ exports.login_post = [
 
                 if (info) {
 
+                    console.log('inside login_post: sending info about bad credentials')
                     const err = [ { msg: info.message } ]
                     res.send( { err: err } )
 
