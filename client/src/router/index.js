@@ -100,13 +100,15 @@ let router = new Router({
   signedIn: false,
   methods: {
     async checkAuth () {
+      console.log('router: checkAuth() function: entering')
       // check whether user is logged in by attempting to retrieve email address
       const response = await MyAccountService.getEmail()
       if (!response.data.err) {
-        console.log('router: checkAuth(): response.data.email = ', response.data.email)
+        console.log('router: checkAuth() function: response.data.email = ', response.data.email)
         router.options.signedIn = response.data.email !== undefined
-        console.log('router: leaving checkAuth function: router.options.signedIn = ', router.options.signedIn)
+        console.log('router: checkAuth() function: router.options.signedIn = ', router.options.signedIn)
         eventBus.$emit('signedIn', router.options.signedIn)
+        console.log('router: checkAuth() function: leaving')
         return router.options.signedIn
       } else {
         //
@@ -118,7 +120,7 @@ let router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('router: beforeEach: begin');
+  console.log('ROUTER: BEFOREEACH: BEGIN');
   (async function () {
     const authenticated = await router.options.methods.checkAuth()
     console.log('router: beforeEach: authenticated = ', authenticated)
@@ -133,7 +135,7 @@ router.beforeEach((to, from, next) => {
           params: {nextUrl: to.fullPath}
         })
       } else {
-        console.log('router: beforeEach: meta: requiresAuth: proceed to next()')
+        console.log('router: beforeEach: meta: requiresAuth: proceed to path = ', to.path)
         next()
       }
     } else if (to.matched.some(record => record.meta.guest)) {
@@ -144,12 +146,12 @@ router.beforeEach((to, from, next) => {
         console.log('router: beforeEach: meta: guest: redirecting to Notes')
         next({name: 'Notes'})
       } else {
-        console.log('router: beforeEach: meta: guest: proceed to next()')
+        console.log('router: beforeEach: meta: guest: proceed to path = ', to.path)
         next()
       }
     } else {
       // this route is only for home page
-      console.log('router: beforeEach: meta: none: proceed to next()')
+      console.log('router: beforeEach: meta: none: proceed to path = ', to.path)
       next()
     }
   }())

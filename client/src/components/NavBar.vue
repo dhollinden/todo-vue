@@ -84,7 +84,7 @@ export default {
     // start listening to eventBus as soon as NavBar component is created
     eventBus.$on('signedIn', (signedIn) => {
       this.signedIn = signedIn
-      console.log('NavBar: eventBus.$on: signedIn = ', this.signedIn)
+      console.log('NavBar: eventBus listener: signedIn = ', this.signedIn)
     })
   },
   methods: {
