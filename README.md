@@ -1,14 +1,25 @@
 # Read Me
 
-## server:
+todo-vue is a simple todo list app that I created as a vehicle for learning web development technologies.
 
-##### [README](server/README.md)
+### client
+* Vue application
+* Material Design styling provided by Vuetify
+* Access control provided by navigation guards in Vue Router
+* Deployed in AWS S3
+* [/client/README.md](client/README.md)
 
+### server
 
-## client:
+* Express application
+* Authentication provided by Passport
+* Supports multiple database types based on environment variable:
+  * MongoDB (mlab) via Mongoose
+  * DynamoDB
+* Deployed as AWS lambda
+* [/server/README.md](server/README.md)
 
-##### [README](client/README.md)
-
+:warning: The server will not run without environment variables specified in a .env file
 
 ## Project History
 
