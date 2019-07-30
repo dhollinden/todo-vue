@@ -2,21 +2,28 @@
 
 todo-vue is a simple todo list app that I'm using as a vehicle for learning web development technologies.
 
+[Open todo-vue in browser](https://d3th56k2khmd9a.cloudfront.net)
+
+# Project Summary
+
 ### client
-* Vue application with Vuetify and Vue Router
+* Vue application
+* Material Design styling via Vuetify
+* Access control via Vue Router
 * Deployed in AWS S3
-* [/client/README.md](client/README.md)
+* [client README](client/README.md)
 
 ### server
 
-* Express application with Passport for authentication
-* Supports both MongoDB (mlab) and DynamoDB databases
+* Express application
+* Passport for authentication
+* Support for both MongoDB (mlab) and DynamoDB databases
 * Deployed as AWS lambda using Serverless
-* [/server/README.md](server/README.md)
+* [server README](server/README.md)
 
 :warning: The server will not run without environment variables specified in a .env file
 
-## Project History
+# Project History
 
 ### todo-vue (current)
 
@@ -27,7 +34,7 @@ todo-vue is a simple todo list app that I'm using as a vehicle for learning web 
 * create persistent navigation bar with navigation drawer for mobile
 * control access using navigation guards in Vue Router
 * host front end on AWS S3 and distribute with Cloudfront CDN
-* deploy Express API on AWS using Serverless
+* deploy Express back end on AWS using Serverless
 
 ### todo-list-4
 

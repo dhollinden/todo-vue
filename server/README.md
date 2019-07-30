@@ -1,30 +1,24 @@
-# Read Me
+# server Read Me
 
-### todo-list-4
+[Open todo-vue in browser](https://d3th56k2khmd9a.cloudfront.net)
 
-* website was created with Express generator
-* notes and users are stored in mLab database
-* authentication performed wtih Passport
-* cookies signed and stored on client with cookie-session
-* site is hosted on Heroku
+[Project README](../readme.md)
+* [client README](../client/README.md)
 
+# server Summary
 
-### todo-list-3
+* Express application
+* Passport for authentication
+* Support for both MongoDB (mlab) and DynamoDB databases
+* Deployed as AWS lambda using Serverless
 
-* index.js: the code that stores/retrieves items is converted into functions
-* local-storage.js: the store/retrieve functions are placed in modules
-* server.js: the store/retrieve functions are loaded and dynamically injected as strings into io-config.js using the jsToJs package
-* index.js: the strings are converted back into the store/retrieve functions using eval()
+# server Setup
 
+### Install Dependencies
+`npm install`
 
-### todo-list-2
+### Serve at localhost:8081
+`npm run devstart`
 
-* server.js: Express is used to serve static files
-
-
-### todo-list-1
-
-* index.html: simple select, button and text area; includes index.js
-* index.js: simple todo-list from Eloquent Javascript
-* server.js: created in node using http, mime, path, url, and fs packages 
+:warning: The server will not run without environment variables specified in a .env file
 
