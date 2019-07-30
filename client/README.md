@@ -2,7 +2,7 @@
 
 [Open todo-vue in browser](https://d3th56k2khmd9a.cloudfront.net)
 
-[Project README](../readme.md)
+[Project README](https://github.com/dhollinden/todo-vue)
 * [server README](../server/README.md)
 
 # client Summary
